@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ property.address }} - Details{% endblock %}
+
+{% block body %}
+<h1>{{ property.address }}</h1>
+
+<ul>
+    <li>{{ property.property_type }}</li>
+    <li>Price: {{ property.price }}</li>
+    <li>Bathrooms: {{ property.bathrooms }}</li>
+    <li>Bedrooms: {{ property.bedrooms }}</li>
+    <li>Lot Area: {{ property.lot_area_value }} {{ property.lot_area_unit }}</li>
+</ul>
+
+{% if session.get('user_email') %}
+<h2>Save to Favorites</h2>
+<form action="/properties/{{ property.zpid }}" method="POST">
+  Yes
+  <input type="radio" name="yes">
+  <input type="submit" value="Submit">
+</form>
+
+<h2>Unsave</h2>
+<form action="/properties/{{ property.zpid }}" method="POST">
+  Yes
+  <input type="radio" name="yes">
+  <input type="submit" value="Submit">
+</form>
+
+<h2>Request a tour</h2>
+<form action="/properties/{{ property.zpid }}" method="POST">
+    <p>
+      Date:
+      <select name="date">
+          <option value="Monday">Monday</option>
+          <option value="Tuesday">Tuesday</option>
+          <option value="Wednesday">Wednesday</option>
+          <option value="Thursday">Thursday</option>
+          <option value="Friday">Friday</option>
+          <option value="Saturday">Saturday</option>
+          <option value="Sunday">Sunday</option>
+      </select>
+    </p>
+    <p>
+        Date:
+        <select name="time">
+            <option value="9:00 am">9:00 am</option>
+            <option value="10:00 am">10:00 am</option>
+            <option value="11:00 am">11:00 am</option>
+            <option value="12:00 pm">12:00 pm</option>
+            <option value="1:00 pm">1:00 pm</option>
+            <option value="2:00 pm">2:00 pm</option>
+            <option value="3:00 pm">3:00 pm</option>
+        </select>
+      </p>
+    <p><input type="submit" value="Request this time"></p>
+</form>
+
+{% endif %}
+
+{% for image in property.images %}
+    <img src="{{ image.url }}" > 
+{% endfor %}
+
+{% endblock %}

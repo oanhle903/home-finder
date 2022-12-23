@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ user.email }} - Favorites{% endblock %}
+
+{% block body %}
+<h1>{{ user.email }}</h1>
+
+<h3>Favorite Properties</h3>
+
+<ul>
+    {% for favorite in user.favorites %}
+        <li><a href="/properties/{{ favorite.property.zpid }}">{{ favorite.property.address }}</a></li>
+    {% endfor %}
+</ul>
+ 
+{% endblock %}

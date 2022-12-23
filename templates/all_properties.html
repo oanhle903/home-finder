@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}All Properties{% endblock %}
+
+{% block body %}
+  <h2>Navigation</h2>
+  <ul>
+    <li><a href="/properties">View all properties</a></li>
+    <li><a href="/users">View all users</a></li>
+  </ul>
+
+
+  <h1>All Properties</h1>
+
+  <ul>
+    {% for property in properties %}
+      <li>
+        <a href="/properties/{{ property.zpid }}">
+          {{ property.address }}
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

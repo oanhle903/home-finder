@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ user.email }} - Schedules{% endblock %}
+
+{% block body %}
+<h1>{{ user.email }}</h1>
+
+<h3>My Schedules</h3>
+
+<ul>
+    {% for schedule in user.schedules %}
+        <li>{{ schedule.when }} at {{ schedule.property.address }}</li>
+    {% endfor %}
+</ul>
+ 
+{% endblock %}
