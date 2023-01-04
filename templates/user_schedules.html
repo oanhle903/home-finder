@@ -9,8 +9,55 @@
 
 <ul>
     {% for schedule in user.schedules %}
-        <li>{{ schedule.when }} at {{ schedule.property.address }}</li>
+        <li>
+            <span>{{ schedule.when }} at {{ schedule.property.address }}</span>
+            <!-- <button type="button" onclick="displayCalender()" class="reschedule border border-black rounded-md" id={{ schedule.schedule_id }}>Reschedule</button>
+            <div id="reschedule-form-container"></div> -->
+            <form action="/properties/{{ schedule.zpid }}/cancel"  method="POST">
+                <button type="submit" class="border border-black rounded-md" id={{ schedule.schedule_id }}>Cancel</button>
+            </form>
+
+        </li>
+        
     {% endfor %}
+
 </ul>
  
+<!-- <script>
+    function displayCalender() {
+        rescheduleButtons = document.querySelectorAll('.reschedule');
+
+        for (const button of rescheduleButtons) {
+            const formHTML = `
+                <form action="/properties/{schedule.property.zpid}/book"  method="POST">
+                    <input id="update-schedule" className="block w-full h-10 border border-black rounded-md" type="datetime-local" name="datetime" placeholder="Select Datetime">
+                    <button type="submit">Request this time</button>
+                </form>
+            `;
+            document.querySelector('#reschedule-form-container').innerHTML = formHTML;
+        }
+    }
+</script>
+
+<script>
+    config = {
+    enableTime: true,
+    dateFormat: "Y-m-d H:i",
+    altInput: true,
+    minDate: "today",
+    maxDate: new Date().fp_incr(60), // 14 days from now
+    "disable": [
+        function(date) {
+            return (date.getDay() === 0); // return true to disable
+        }
+    ],
+    "locale": {
+        "firstDayOfWeek": 1 // start week on Monday
+    },
+    minTime: "09:00",
+    maxTime: "18:00",
+    }
+
+    flatpickr("#update-schedule", config); -->
+</script>
 {% endblock %}

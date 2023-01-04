@@ -29,7 +29,7 @@ def get_user_by_email(email):
     return User.query.filter(User.email == email).first()
 
 
-def create_property(zpid, address, zipcode, property_type, price, bathrooms, bedrooms, lot_area_value, lot_area_unit):
+def create_property(zpid, address, zipcode, property_type, price, bathrooms, bedrooms, lot_area_value, lot_area_unit, img_src, longitude, latitude):
     """Create and return a property."""
 
     property = Property(
@@ -41,7 +41,10 @@ def create_property(zpid, address, zipcode, property_type, price, bathrooms, bed
         bathrooms=bathrooms, 
         bedrooms=bedrooms, 
         lot_area_value=lot_area_value,
-        lot_area_unit=lot_area_unit
+        lot_area_unit=lot_area_unit,
+        img_src=img_src,
+        longitude=longitude,
+        latitude=latitude
     )
 
     return property
@@ -80,10 +83,23 @@ def create_favorite(user, property):
     return favorite 
 
 
-# def remove_favorite(property):
-#     """Remove and return a favorite"""
+def get_favorite_by_user_and_property(user, property):
+    """Get a favorite object from the database by user and property."""
+    # Query the database for the favorite object
+    favorite = db.session.query(Favorite).filter(
+        Favorite.user == user, Favorite.property == property).first()
+
+    # Return the favorite object if it exists, or None if it does not
+    return favorite
 
 
+def get_schedule_by_user_and_property(user, property):
+    """Get a schedule object from the database by user and property."""
+    # Query the database for the schedule object
+    schedule = Schedule.query.filter(
+        Schedule.user == user, Schedule.property == property).first()
+
+    return schedule
 
 def create_schedule(user, property, when):
     """Create and return a schedule"""
@@ -91,6 +107,11 @@ def create_schedule(user, property, when):
     schedule = Schedule(user=user, property=property, when=when)
     
     return schedule
+
+def update(cls, rating_id, new_score):
+        """ Update a rating given rating_id and the updated score. """
+        rating = cls.query.get(rating_id)
+        rating.score = new_score
 
 
 if __name__ == '__main__':

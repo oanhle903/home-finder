@@ -1,23 +1,31 @@
 {% extends 'base.html' %}
 {% block title %}All Properties{% endblock %}
 
+
 {% block body %}
   <h2>Navigation</h2>
   <ul>
     <li><a href="/properties">View all properties</a></li>
     <li><a href="/users">View all users</a></li>
   </ul>
+  
+  <div id="root" class="grid grid-cols-2">
+    <div id="map" class="h-96"></div>
+    {% if not search %}
+    <div id="all_properties_section"></div>
+    {% endif %}
+    {% if search %}
+    <div id="searched_properties_section"></div>
+    {% endif %}
+    
+  </div>
+      
+  <script type="text/jsx" src="/static/js/properties.jsx"></script>
+  <script type="text/jsx" src="/static/js/searched_properties.jsx"></script>
+  <script src="/static/js/mapdemo.js"></script>
+  <script
+    async
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4riWPGSrbOIjWak-2wBdWZP1w1FXFh98&callback=initMap">
+  </script>
 
-
-  <h1>All Properties</h1>
-
-  <ul>
-    {% for property in properties %}
-      <li>
-        <a href="/properties/{{ property.zpid }}">
-          {{ property.address }}
-        </a>
-      </li>
-    {% endfor %}
-  </ul>
 {% endblock %}

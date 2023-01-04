@@ -21,7 +21,7 @@ model.connect_to_db(server.app)
 model.db.create_all()
 
 # Load properties data from JSON file
-with open('data/properties.json') as f:
+with open('static/data/properties.json') as f:
     property_data = json.loads(f.read())
 
 
@@ -41,14 +41,17 @@ for property in property_data:
     bedrooms = property['bedrooms']
     lot_area_value = property['lotAreaValue']
     lot_area_unit = property['lotAreaUnit']
+    img_src = property['imgSrc']
+    longitude = property['longitude']
+    latitude = property['latitude']
 
     # Create a property here and append it to properties_in_db
-    db_property = crud.create_property(zpid, address, zipcode, property_type, price, bathrooms, bedrooms, lot_area_value, lot_area_unit)
+    db_property = crud.create_property(zpid, address, zipcode, property_type, price, bathrooms, bedrooms, lot_area_value, lot_area_unit, img_src, longitude, latitude)
     properties_in_db.append(db_property)
 
 
 # Load images data from JSON file
-with open('data/images.json') as f:
+with open('static/data/images.json') as f:
     image_data = json.loads(f.read())
 
 # Create images, store them in list so we can use them
@@ -65,8 +68,7 @@ model.db.session.add_all(images_in_db)
 model.db.session.add_all(properties_in_db)
 model.db.session.commit()
 
-# Create 10 users; each user will make 5 favorite properties and 5 schedules
-
+# Create 10 users;
 for n in range(10):
     email = f'user{n+1}@test.com'  # Voila! A unique email!
     password = 'test'
@@ -74,17 +76,5 @@ for n in range(10):
     # Create a user here
     db_user = crud.create_user(email, password)
     model.db.session.add(db_user)
-
-    # Create 5 favorite properties and 5 schedules for the user
-    for i in range(5):
-        random_property = choice(properties_in_db)
-        properties_in_db.remove(random_property)
-        when = datetime.strptime(f'2022-12-14', '%Y-%m-%d')
-
-        db_favorite = crud.create_favorite(db_user, random_property)
-        db_schedule = crud.create_schedule(db_user, random_property, when)
-        model.db.session.add(db_favorite)
-        model.db.session.add(db_schedule)
-
 
 model.db.session.commit()

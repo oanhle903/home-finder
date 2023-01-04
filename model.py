@@ -37,6 +37,9 @@ class Property(db.Model):
     bedrooms = db.Column(db.Integer)
     lot_area_value = db.Column(db.Float)
     lot_area_unit = db.Column(db.String)
+    img_src = db.Column(db.String)
+    longitude = db.Column(db.Float)
+    latitude = db.Column(db.Float)
 
     favorites = db.relationship("Favorite", back_populates="property")
     schedules = db.relationship("Schedule", back_populates="property")
@@ -45,6 +48,10 @@ class Property(db.Model):
 
     def __repr__(self):
         return f"<Property zpid={self.zpid} address={self.address}>"
+
+    def to_dict(self):
+        return {"zpid": self.zpid, "address": self.address, "zipcode": self.zipcode, "property_type": self.property_type, "price": self.price, "bathrooms": self.bathrooms, "bedrooms": self.bedrooms, "lot_area_value": self.lot_area_value, "lot_area_unit": self.lot_area_unit, "img_src": self.img_src, "longitude": self.longitude, "latitude": self.latitude}
+
 
 class Image(db.Model):
     """A property image."""
@@ -87,7 +94,6 @@ class Schedule(db.Model):
     when = db.Column(db.DateTime)
     zpid = db.Column(db.String, db.ForeignKey("properties.zpid"))
     user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
-    
     user = db.relationship("User", back_populates="schedules")
     property = db.relationship("Property", back_populates="schedules")
 

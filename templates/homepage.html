@@ -2,21 +2,20 @@
 {% block title %} Finding Properties Home{% endblock %}
 
 {% block body %}
-<div style="background-color:aqua;" >
-  <div class="container">
-    <div class="search-container ">
-      <form method="GET" action="/properties/search">
-        <input type="text" name="zipcode" class="search-bar" placeholder="Search by zipcode">
-        <button type="submit" class="search-button">Search</button>
-      </form>
-    </div>
+  <div style="background-color:aqua;">
+    <div class="landing-container">
+      <div class="search-container ">
+        <form id="search_form" method="GET" action="/properties/search/api">
+          <input type="text" name="zipcode" class="search-bar" placeholder="Search by zipcode">
+          <button type="submit" class="search-button">Search</button>
+          
+        </form>
+      </div>
 
-    <div class="center-text">
-      <h1>Find your dream homes</h1>
+      <div class="center-text">
+        <h1>Find your dream homes</h1>
+      </div>
     </div>
   </div>
-</div>
-
-
 
 {% endblock %}

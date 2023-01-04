@@ -1,7 +1,7 @@
-"""Server for movie ratings app."""
+"""Server for home finder app."""
 
 from flask import (Flask, render_template, request, flash, session,
-                   redirect)
+                   redirect, jsonify)
 from datetime import datetime
 import json
 from model import connect_to_db, db
@@ -15,24 +15,35 @@ app.jinja_env.undefined = StrictUndefined
 
 app.app_context().push()
 
-# Replace this with routes and view functions!
+
 @app.route('/')
 def homepage():
     """View homepage"""
 
     return render_template('homepage.html')
 
+
 @app.route('/properties')
 def all_properties():
     """View all properties"""
 
+    return render_template('all_properties.html', search=False)
+
+
+@app.route('/properties.json')
+def propertiess():
+    """Return list of properties dictionary"""
+
     properties = crud.get_properties()
 
-    return render_template('all_properties.html', properties=properties)
+    # Convert the list of objects to a list of dictionaries
+    dict_list = [obj.to_dict() for obj in properties]
+
+    return jsonify(dict_list)
 
 
 @app.route('/properties/<zpid>')
-def movie_details(zpid):
+def property_details(zpid):
     """View details of a property"""
 
     property = crud.get_property_by_zpid(zpid)
@@ -40,17 +51,23 @@ def movie_details(zpid):
     return render_template('property_details.html', property=property)
 
 
-@app.route('/properties/search')
-def find_properties():
+@app.route('/properties/search/api')
+def find_searched_properties():
     """Search for properties"""
 
-    zipcode = request.args.get('zipcode', '')
+    zipcode = request.args.get('zipcode')
 
     properties = crud.get_properties_by_zipcode(zipcode)
-    # if properties == "" return render_template('discover page')
-    return render_template('search_results.html',
-                           results=properties)
+    if not properties:
+        return render_template('all_properties.html', search=False)
+    else:
+        dict_list = [obj.to_dict() for obj in properties]
+        json_data = json.dumps(dict_list, indent=2)
+        with open('static/data/results.json', 'w') as f:
+            # Write the JSON string to the file
+            f.write(json_data)
 
+        return render_template('all_properties.html', search=True)
 
 
 @app.route('/users')
@@ -76,8 +93,12 @@ def user_favorites(user_id):
     """View details of a user's favorites"""
 
     user = crud.get_user_by_id(user_id)
+    favorites = user.favorites
+    count = 0
+    for favorite in favorites:
+        count += 1
 
-    return render_template('user_favorites.html', user=user)
+    return render_template('user_favorites.html', user=user, count=count)
 
 
 @app.route('/users/<user_id>/schedules')
@@ -160,7 +181,7 @@ def create_favorite(zpid):
     logged_in_email = session.get("user_email")
 
     if logged_in_email is None:
-        flash("You must log in to rate a movie.")
+        flash("You must log in to favorite this item.")
     else:
         user = crud.get_user_by_email(logged_in_email)
         property = crud.get_property_by_zpid(zpid)
@@ -173,24 +194,28 @@ def create_favorite(zpid):
 
     return redirect(f"/properties/{zpid}")
 
+@app.route('/properties/<zpid>/favorites', methods=["POST"])
+def remove_favorite(zpid):
+    """Remove a favorite property."""
+    
+    # Get the logged in user and the property
+    logged_in_email = session.get("user_email")
+    user = crud.get_user_by_email(logged_in_email)
+    property = crud.get_property_by_zpid(zpid)
+
+    # Get the favorite object from the database
+    favorite = crud.get_favorite_by_user_and_property(user, property)
+
+    # Delete the favorite object from the database
+    db.session.delete(favorite)
+    db.session.commit()
+
+    return redirect(f"/properties/{zpid}")
+ 
 
 
-# @app.route('/properties/<zpid>/favorites', methods=["DELETE"])
-# def remove_favorite(zpid):
-#     """Remove a favorite property."""
-#     logged_in_email = session.get("user_email")
-#     user = crud.get_user_by_email(logged_in_email)
-#     property = crud.get_property_by_zpid(zpid)
-#     TODO: write function to get that favorite need to be deleted
-#     favorite = crud.create_favorite(user, property) 
-#     db.session.delete(favorite)
-#     db.session.commit()
 
-#     flash(f"You removed this property to favorites.")
-
-#     return redirect(f"/properties/{zpid}")
-
-@app.route('/properties/<zpid>', methods=["POST"])
+@app.route('/properties/<zpid>/book', methods=["POST"])
 def create_schedule(zpid):
     """Create a new schedule to tour the property."""
 
@@ -199,9 +224,10 @@ def create_schedule(zpid):
     if logged_in_email is None:
         flash("You must log in to book a tour.")
     else:
+        request_datetime = request.form.get("datetime")
         user = crud.get_user_by_email(logged_in_email)
         property = crud.get_property_by_zpid(zpid)
-        when = datetime.strptime(f'2022-12-14', '%Y-%m-%d')
+        when = datetime.strptime(request_datetime, '%Y-%m-%d %H:%M')
 
         schedule = crud.create_schedule(user, property, when)
         db.session.add(schedule)
@@ -211,6 +237,59 @@ def create_schedule(zpid):
 
     return redirect(f"/properties/{zpid}")
 
+
+@app.route('/properties/<zpid>/cancel', methods=["POST"])
+def cancel_schedule(zpid):
+    """Cancel a schedule."""
+    logged_in_email = session.get("user_email")
+    user = crud.get_user_by_email(logged_in_email)
+    property = crud.get_property_by_zpid(zpid)
+    schedule = crud.get_schedule_by_user_and_property(user, property)
+
+    now = datetime.now()
+    tour_date = schedule.when 
+    days = tour_date - now
+    if days.days > 1:
+        db.session.delete(schedule)
+        db.session.commit()
+        flash(f"cancelled successfully")
+    else:
+        flash(f"You cannot cancel it before 24 hours")
+
+    return redirect(f"/users/{user.user_id}/schedules")
+
+# @app.route('/properties/<zpid>/book', methods=["POST"])
+# def update_schedule(zpid):
+#     logged_in_email = session.get("user_email")
+#     user = crud.get_user_by_email(logged_in_email)
+#     property = crud.get_property_by_zpid(zpid)
+
+#     if logged_in_email is None:
+#         flash("You must log in to book a tour.")
+#     else:
+#         # Retrieve the existing schedule
+#         schedule = crud.get_schedule_by_user_and_property(user, property)
+#         if schedule is None:
+#             flash("You have not booked a tour for this property.")
+#             return redirect(f"/properties/{zpid}")
+        
+#         # Update the schedule
+#         request_datetime = request.form.get("datetime")
+#         when = datetime.strptime(request_datetime, '%Y-%m-%d %H:%M')
+#         schedule.when = when
+#         db.session.commit()
+    
+#     flash(f"You have updated the tour time for this property")
+#     return redirect(f"/properties/{zpid}")
+
+# @app.route("/reschedule", methods=["POST"])
+# def reschedule():
+#     schedule_id = request.json["schedule_id"]
+#     updated_score = request.json["updated_score"]
+#     Rating.update(schedule_id, updated_score)
+#     db.session.commit()
+
+#     return "Success"
 
 
 if __name__ == "__main__":

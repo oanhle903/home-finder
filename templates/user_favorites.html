@@ -3,14 +3,47 @@
 {% block title %}{{ user.email }} - Favorites{% endblock %}
 
 {% block body %}
-<h1>{{ user.email }}</h1>
 
-<h3>Favorite Properties</h3>
 
-<ul>
-    {% for favorite in user.favorites %}
-        <li><a href="/properties/{{ favorite.property.zpid }}">{{ favorite.property.address }}</a></li>
-    {% endfor %}
-</ul>
- 
+<div class="mx-40 mt-2">
+    <p class="text-4xl mb-2">Favorite Properties</p>
+    <p class="text-xl mb-2">{{count}} favorite properties</p>
+
+    <div class='cards grid grid-cols-3 gap-3 justify-items-center'>
+        {% for favorite in user.favorites %}
+            <div class="card">
+                <div class="absolute top-2.5 right-2.5 text-3xl">
+                    <form action="/properties/{{ favorite.property.zpid }}"  method="POST">
+                      <button type="submit" id="save">
+                        <i class="fa-regular fa-heart"></i>
+                      </button>
+                    </form>
+                </div>
+                <div class="absolute top-2.5 right-10 text-3xl">
+                    <form action="/properties/{{ favorite.property.zpid }}/favorites" method="POST">
+                      <button type="submit" id="unsave">
+                        <i class="fa-solid fa-heart"></i>
+                      </button>
+                    </form>
+                </div>
+                <div class='card_image'>
+                <a href="/properties/{{ favorite.property.zpid }}">
+                    <img src="{{ favorite.property.img_src }}">
+                </a>
+                </div>
+                <div class='card_info my-2 mx-2'>
+                <p class="text-xl font-semibold">{{ favorite.property.price }}</p>
+                <p>
+                    <strong>{{ favorite.property.bedrooms }}</strong> bds |
+                    <strong>{{ favorite.property.bathrooms }}</strong> ba |
+                    <strong>{{ favorite.property.lot_area_value }}</strong> {{ favorite.property.lot_area_unit}}
+                </p>
+                <p>{{ favorite.property.address }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+
 {% endblock %}

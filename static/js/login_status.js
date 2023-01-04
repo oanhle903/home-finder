@@ -1,17 +1,33 @@
 'use strict';
 
-fetch('/check_login')
+// fetch('/check_login')
+//   .then((response) => response.text())
+//   .then((responseData) => {
+//     console.log(responseData);
+//     if (responseData === 'logged_in') {
+//       document.querySelector('#sign-up').style.display = 'none'; // hide signup button
+//       document.querySelector('#sign-in').style.display = 'none'; // hide signin button
+//     }
+//     else {
+//       document.querySelector('#my-profile').style.display = 'none'; // hide profile
+//       // TODO if user is not logged in and user click on the save button then display the login from
+//     }
+//   });
+
+  fetch('/check_login')
   .then((response) => response.text())
   .then((responseData) => {
     console.log(responseData);
-    if (responseData === 'logged_in') {
-      document.querySelector('#sign-up').style.display = 'none'; // hide signup button
-      document.querySelector('#sign-in').style.display = 'none'; // hide signin button
+    // Handle click on save item to favorite button
+    document.querySelector("#save").addEventListener("click", () => {
+      if (responseData === 'logged_out') {
+        // Display login form
+        document.querySelector('.login_container').style.display = "block";
+      }});
+
+      // TODO if user is not logged in and user click on the save button then display the login from
     }
-    else {
-      document.querySelector('#my-profile').style.display = 'none'; // hide profile
-    }
-  });
+  );
 
 // show the login form when the button is clicked, and to add an overlay effect
 document.getElementById('signin-button').addEventListener('click', () => {

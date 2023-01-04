@@ -102,31 +102,6 @@
   {
     "dateSold": null,
     "propertyType": "SINGLE_FAMILY",
-    "lotAreaValue": 6307.488,
-    "address": "4663 Mangrum Dr, Santa Clara, CA 95054",
-    "priceChange": null,
-    "imgSrc": "https://maps.googleapis.com/maps/api/staticmap?mobile=false&sensor=true&maptype=satellite&size=575x242&zoom=17&center=37.401390075683594,-121.95841217041016&key=AIzaSyBJsNQO5ZeG-XAbqqWLKwG08fWITSxg33w&signature=wkiAD399r--bhfRkTB1XmMRLzWw=",
-    "price": 1490000,
-    "bedrooms": 4,
-    "longitude": -121.95841,
-    "latitude": 37.40139,
-    "listingStatus": "FOR_SALE",
-    "zpid": "19487527",
-    "listingSubType": {
-      "is_FSBA": true
-    },
-    "contingentListingType": null,
-    "daysOnZillow": -1,
-    "bathrooms": 2,
-    "livingArea": 1167,
-    "country": "USA",
-    "currency": "USD",
-    "lotAreaUnit": "sqft",
-    "hasImage": null
-  },
-  {
-    "dateSold": null,
-    "propertyType": "SINGLE_FAMILY",
     "lotAreaValue": 6621.12,
     "address": "1700 Chestnut St, Santa Clara, CA 95054",
     "priceChange": null,
