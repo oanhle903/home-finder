@@ -55,7 +55,7 @@
   background-color: white;
   padding: 20px;
   border-radius: 5px;
-  z-index: 2;
+  z-index: 20;
 }
 
 /* create an overlay by adding a semi-transparent background color to the login-container */

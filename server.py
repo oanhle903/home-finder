@@ -6,6 +6,7 @@ from datetime import datetime
 import json
 from model import connect_to_db, db
 import crud
+import os
 
 from jinja2 import StrictUndefined
 app = Flask(__name__)
@@ -15,6 +16,7 @@ app.jinja_env.undefined = StrictUndefined
 
 app.app_context().push()
 
+MAP_API_KEY = os.environ.get('MAP_API')
 
 @app.route('/')
 def homepage():
@@ -27,7 +29,7 @@ def homepage():
 def all_properties():
     """View all properties"""
 
-    return render_template('all_properties.html', search=False)
+    return render_template('all_properties.html', search=False, MAP_API_KEY=MAP_API_KEY)
 
 
 @app.route('/properties.json')
@@ -35,6 +37,8 @@ def propertiess():
     """Return list of properties dictionary"""
 
     properties = crud.get_properties()
+
+    # grab the user favortes loop through all properties and queries the favorites table by user_id
 
     # Convert the list of objects to a list of dictionaries
     dict_list = [obj.to_dict() for obj in properties]
@@ -47,8 +51,16 @@ def property_details(zpid):
     """View details of a property"""
 
     property = crud.get_property_by_zpid(zpid)
+    
+    """
+    check if property is already in the favorites table
+    query the favortie table given that zpid and return is_favorite yes or no?
+    """
+    is_favorite = crud.is_favorite(zpid)
+    
 
-    return render_template('property_details.html', property=property)
+    return render_template('property_details.html', property=property, is_favorite=is_favorite)
+
 
 
 @app.route('/properties/search/api')
@@ -89,7 +101,7 @@ def user_details(user_id):
 
 
 @app.route('/users/<user_id>/favorites')
-def user_favorites(user_id):
+def show_user_favorites(user_id):
     """View details of a user's favorites"""
 
     user = crud.get_user_by_id(user_id)
@@ -106,8 +118,27 @@ def user_schedules(user_id):
     """View details of a user's schedules"""
 
     user = crud.get_user_by_id(user_id)
+    schedules = user.schedules
+    canceled_schedules = [s for s in schedules if s.is_canceled]
 
-    return render_template('user_schedules.html', user=user)
+    current_schedules = []
+    past_schedules = []
+    future_schedules = []
+
+    for schedule in schedules:
+        tour_date = schedule.when  
+        now = datetime.now()
+        days = tour_date - now  # = datetime.timedelta(days=2, seconds=57433, microseconds=667989)
+        
+        # days.days == 0 means same day
+        if days.days == 0 and tour_date >= now:
+            current_schedules.append(schedule)
+        elif tour_date < now:
+            past_schedules.append(schedule)
+        else:
+            future_schedules.append(schedule)
+
+    return render_template('user_schedules.html', user=user, current_schedules=current_schedules, past_schedules=past_schedules, future_schedules=future_schedules, canceled_schedules=canceled_schedules)
 
 
 @app.route('/users', methods=['POST'])
@@ -167,14 +198,12 @@ def check_login():
     logged_in_email = session.get("user_email")
     
     if logged_in_email:
-        # User is logged in
         return 'logged_in'
     else:
-        # User is not logged in
         return 'logged_out'
 
 
-@app.route('/properties/<zpid>', methods=["POST"])
+@app.route('/properties/<zpid>/favorite', methods=["POST"])
 def create_favorite(zpid):
     """Create a new favorite for the property."""
 
@@ -194,7 +223,7 @@ def create_favorite(zpid):
 
     return redirect(f"/properties/{zpid}")
 
-@app.route('/properties/<zpid>/favorites', methods=["POST"])
+@app.route('/properties/<zpid>/unfavorite', methods=["POST"])
 def remove_favorite(zpid):
     """Remove a favorite property."""
     
@@ -210,9 +239,7 @@ def remove_favorite(zpid):
     db.session.delete(favorite)
     db.session.commit()
 
-    return redirect(f"/properties/{zpid}")
- 
-
+    return redirect(f"/users/{user.user_id}/favorites")
 
 
 @app.route('/properties/<zpid>/book', methods=["POST"])
@@ -238,19 +265,22 @@ def create_schedule(zpid):
     return redirect(f"/properties/{zpid}")
 
 
-@app.route('/properties/<zpid>/cancel', methods=["POST"])
-def cancel_schedule(zpid):
+@app.route('/cancel', methods=["POST"])
+def cancel_schedule():
     """Cancel a schedule."""
     logged_in_email = session.get("user_email")
     user = crud.get_user_by_email(logged_in_email)
-    property = crud.get_property_by_zpid(zpid)
-    schedule = crud.get_schedule_by_user_and_property(user, property)
+
+    schedule_id = request.form.get('schedule_id')
+    schedule = crud.get_schedule_by_schedule_id(schedule_id)
 
     now = datetime.now()
     tour_date = schedule.when 
     days = tour_date - now
-    if days.days > 1:
-        db.session.delete(schedule)
+    # > 24 hours
+    if days.days*86400 + days.seconds > 86400: 
+        schedule.is_canceled = True
+        schedule.is_active = False
         db.session.commit()
         flash(f"cancelled successfully")
     else:

@@ -8,7 +8,13 @@
     <li><a href="/properties">View all properties</a></li>
     <li><a href="/users">View all users</a></li>
   </ul>
-  
+  <div class="search-container ">
+    <form id="search_form" method="GET" action="/properties/search/api">
+      <input type="text" name="zipcode" class="search-bar" placeholder="Search by zipcode">
+      <button type="submit" class="search-button">Search</button>
+      
+    </form>
+  </div>
   <div id="root" class="grid grid-cols-2">
     <div id="map" class="h-96"></div>
     {% if not search %}
@@ -20,12 +26,13 @@
     
   </div>
       
+  <script type="text/jsx" src="/static/js/property_card.jsx"></script>
   <script type="text/jsx" src="/static/js/properties.jsx"></script>
   <script type="text/jsx" src="/static/js/searched_properties.jsx"></script>
   <script src="/static/js/mapdemo.js"></script>
   <script
     async
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4riWPGSrbOIjWak-2wBdWZP1w1FXFh98&callback=initMap">
+    src="https://maps.googleapis.com/maps/api/js?key={{ MAP_API_KEY }}&callback=initMap">
   </script>
 
 {% endblock %}

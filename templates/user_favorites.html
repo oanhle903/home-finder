@@ -13,16 +13,9 @@
         {% for favorite in user.favorites %}
             <div class="card">
                 <div class="absolute top-2.5 right-2.5 text-3xl">
-                    <form action="/properties/{{ favorite.property.zpid }}"  method="POST">
-                      <button type="submit" id="save">
-                        <i class="fa-regular fa-heart"></i>
-                      </button>
-                    </form>
-                </div>
-                <div class="absolute top-2.5 right-10 text-3xl">
-                    <form action="/properties/{{ favorite.property.zpid }}/favorites" method="POST">
-                      <button type="submit" id="unsave">
-                        <i class="fa-solid fa-heart"></i>
+                    <form id="unfavorite-form"  action="/properties/{{ favorite.property.zpid }}/unfavorite"  method="POST">
+                      <button type="submit" id="unfavorite-button ">
+                        <i id="unfavorite-icon" class="fa-solid fa-heart"></i>
                       </button>
                     </form>
                 </div>
@@ -44,6 +37,5 @@
         {% endfor %}
     </div>
 </div>
-
 
 {% endblock %}

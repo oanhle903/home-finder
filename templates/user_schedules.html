@@ -7,22 +7,78 @@
 
 <h3>My Schedules</h3>
 
-<ul>
-    {% for schedule in user.schedules %}
-        <li>
-            <span>{{ schedule.when }} at {{ schedule.property.address }}</span>
-            <!-- <button type="button" onclick="displayCalender()" class="reschedule border border-black rounded-md" id={{ schedule.schedule_id }}>Reschedule</button>
-            <div id="reschedule-form-container"></div> -->
-            <form action="/properties/{{ schedule.zpid }}/cancel"  method="POST">
-                <button type="submit" class="border border-black rounded-md" id={{ schedule.schedule_id }}>Cancel</button>
-            </form>
+<div class="my-4">
+    <p>Current Schedules</p>
+    {% if current_schedules %}
+        <ul class="list-disc">
+            {% for schedule in current_schedules %}
+                {% if schedule.is_active %}
+                    <li>
+                        <span>{{ schedule.when }} at {{ schedule.property.address }}</span>
+                        <form action="/cancel"  method="POST">
+                            <button type="hidden" type="submit" class="border border-black rounded-md" name="schedule_id" value={{ schedule.schedule_id }}>Cancel</button>
+                        </form>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No current schedules to display.</p>
+    {% endif %}
+</div>
 
-        </li>
-        
-    {% endfor %}
+<div class="my-4">
+    <p>Future Schedules</p>
+    {% if future_schedules %}
+        <ul class="list-disc">
+            {% for schedule in future_schedules %}
+                {% if schedule.is_active %}
+                    <li>
+                        <span>{{ schedule.when }} at {{ schedule.property.address }}</span>
+                        <form action="/cancel"  method="POST">
+                            <button type="hidden" type="submit" class="border border-black rounded-md" name="schedule_id" value={{ schedule.schedule_id }}>Cancel</button>
+                        </form>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No future schedules to display.</p>
+    {% endif %}
+</div>
 
-</ul>
- 
+<div class="my-4">
+    <p>Past Schedules</p>
+    {% if past_schedules %}
+        <ul class="list-disc">
+            {% for schedule in past_schedules %}
+                {% if schedule.is_active %}
+                    <li>
+                        <span>{{ schedule.when }} at {{ schedule.property.address }}</span>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No past schedules to display.</p>
+    {% endif %}
+</div>
+
+<div class="my-4">
+    <p>Canceled Schedules</p>
+    {% if canceled_schedules %}
+        <ul class="list-disc">
+            {% for schedule in canceled_schedules %}
+                <li>
+                    <span>{{ schedule.when }} at {{ schedule.property.address }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No canceled schedules to display.</p>
+    {% endif %}
+</div>
+
 <!-- <script>
     function displayCalender() {
         rescheduleButtons = document.querySelectorAll('.reschedule');
@@ -58,6 +114,6 @@
     maxTime: "18:00",
     }
 
-    flatpickr("#update-schedule", config); -->
-</script>
+    flatpickr("#update-schedule", config); 
+</script> -->
 {% endblock %}

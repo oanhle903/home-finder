@@ -1,8 +1,12 @@
 'use strict';
+
+// import PropertyCard from "./property_card";
+
 function Search_results() {
   const [properties, setProperties] = React.useState([]);
 
   React.useEffect(() => {
+    // fetch("/properties/search/api")
     fetch("/static/data/results.json")
       .then((response) => {
         return response.json();
@@ -23,27 +27,34 @@ function Search_results() {
 
       <div className='cards grid grid-cols-2 gap-2 place-content-stretch'>
         {properties.map((property) => (
-          <div className="card " key={property.zpid}>
-            <div className='card_image'>
-              <a href={`/properties/${property.zpid}`}>
-                <img src={property.img_src} alt="Home" />
-              </a>
-            </div>
-            <div className='card_info my-2 mx-2'>
-              <p className="text-xl font-semibold">${property.price}</p>
-              <p>
-                <strong>{property.bedrooms}</strong> bds |
-                <strong>{property.bathrooms}</strong> ba |
-                <strong>{property.lot_area_value }</strong> {property.lot_area_unit}
-              </p>
-              <p>{property.address}</p>
-            </div>
-          </div>
+          <PropertyCard property={property} key={property.zpid} />
         ))}
       </div>
     </div>
   );
 }
+
+function PropertyCard({ property }) {
+  return (
+    <div className="card ">
+      <div className='card_image'>
+        <a href={`/properties/${property.zpid}`}>
+          <img src={property.img_src} alt="Home" />
+        </a>
+      </div>
+      <div className='card_info my-2 mx-2'>
+        <p className="text-xl font-semibold">${property.price}</p>
+        <p>
+          <strong>{property.bedrooms}</strong> bds |
+          <strong>{property.bathrooms}</strong> ba |
+          <strong>{property.lot_area_value }</strong> {property.lot_area_unit}
+        </p>
+        <p>{property.address}</p>
+      </div>
+    </div> 
+    );
+}
+
 if (document.querySelector('#searched_properties_section')) {
   ReactDOM.render(<Search_results />, document.querySelector('#searched_properties_section'));
 }

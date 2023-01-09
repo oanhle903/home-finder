@@ -14,20 +14,6 @@
 //     }
 //   });
 
-  fetch('/check_login')
-  .then((response) => response.text())
-  .then((responseData) => {
-    console.log(responseData);
-    // Handle click on save item to favorite button
-    document.querySelector("#save").addEventListener("click", () => {
-      if (responseData === 'logged_out') {
-        // Display login form
-        document.querySelector('.login_container').style.display = "block";
-      }});
-
-      // TODO if user is not logged in and user click on the save button then display the login from
-    }
-  );
 
 // show the login form when the button is clicked, and to add an overlay effect
 document.getElementById('signin-button').addEventListener('click', () => {
