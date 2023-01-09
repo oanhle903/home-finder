@@ -94,6 +94,8 @@ class Schedule(db.Model):
     when = db.Column(db.DateTime)
     zpid = db.Column(db.String, db.ForeignKey("properties.zpid"))
     user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
+    is_active = db.Column(db.Boolean, default=True)
+    is_canceled = db.Column(db.Boolean, default=False)
     user = db.relationship("User", back_populates="schedules")
     property = db.relationship("Property", back_populates="schedules")
 
