@@ -82,6 +82,10 @@ def create_favorite(user, property):
 
     return favorite 
 
+def is_favorite(zpid):
+    favorite = Favorite.query.filter_by(zpid=zpid).first()
+    return favorite is not None
+
 
 def get_favorite_by_user_and_property(user, property):
     """Get a favorite object from the database by user and property."""
@@ -93,25 +97,19 @@ def get_favorite_by_user_and_property(user, property):
     return favorite
 
 
-def get_schedule_by_user_and_property(user, property):
-    """Get a schedule object from the database by user and property."""
-    # Query the database for the schedule object
-    schedule = Schedule.query.filter(
-        Schedule.user == user, Schedule.property == property).first()
+def get_schedule_by_schedule_id(schedule_id):
+
+    schedule = Schedule.query.filter_by(schedule_id=schedule_id).first()
 
     return schedule
 
 def create_schedule(user, property, when):
     """Create and return a schedule"""
 
-    schedule = Schedule(user=user, property=property, when=when)
+    schedule = Schedule(user=user, property=property, when=when, is_active=True,
+        is_canceled=False)
     
     return schedule
-
-def update(cls, rating_id, new_score):
-        """ Update a rating given rating_id and the updated score. """
-        rating = cls.query.get(rating_id)
-        rating.score = new_score
 
 
 if __name__ == '__main__':
