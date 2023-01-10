@@ -1,0 +1,18 @@
+<div class="card ">
+  <div class='card_image'>
+    <a href="/properties/{{ property.zpid }}">
+      <img src="{{ property.img_src }}" alt="Home" />
+    </a>
+  </div>
+  <div class='card_info my-2 mx-2'>
+    <div class="property-data" data-latitude="{{property.latitude}}" data-longitude="{{property.longitude}}" data-address="{{property.address}}" style="display: none;"></div>
+
+    <p class="text-xl font-semibold">${{ property.price }}</p>
+    <p>
+      <strong>{{ property.bedrooms }}</strong> bds |
+      <strong>{{ property.bathrooms }}</strong> ba |
+      <strong>{{ property.lot_area_value }}</strong> {{ property.lot_area_unit }}
+    </p>
+    <p>{{ property.address }}</p>
+  </div>
+</div> 

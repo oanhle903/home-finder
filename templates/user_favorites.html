@@ -7,7 +7,7 @@
 
 <div class="mx-40 mt-2">
     <p class="text-4xl mb-2">Favorite Properties</p>
-    <p class="text-xl mb-2">{{count}} favorite properties</p>
+    <p class="text-xl mb-2">{{ favorites|length }} favorite properties</p>
 
     <div class='cards grid grid-cols-3 gap-3 justify-items-center'>
         {% for favorite in user.favorites %}
@@ -19,7 +19,7 @@
                       </button>
                     </form>
                 </div>
-                <div class='card_image'>
+                <div class="card_image">
                 <a href="/properties/{{ favorite.property.zpid }}">
                     <img src="{{ favorite.property.img_src }}">
                 </a>

@@ -28,22 +28,11 @@ def homepage():
 @app.route('/properties')
 def all_properties():
     """View all properties"""
-
-    return render_template('all_properties.html', search=False, MAP_API_KEY=MAP_API_KEY)
-
-
-@app.route('/properties.json')
-def propertiess():
-    """Return list of properties dictionary"""
-
     properties = crud.get_properties()
 
-    # grab the user favortes loop through all properties and queries the favorites table by user_id
 
-    # Convert the list of objects to a list of dictionaries
-    dict_list = [obj.to_dict() for obj in properties]
+    return render_template('all_properties.html', search=False, MAP_API_KEY=MAP_API_KEY, properties=properties)
 
-    return jsonify(dict_list)
 
 
 @app.route('/properties/<zpid>')
@@ -69,17 +58,27 @@ def find_searched_properties():
 
     zipcode = request.args.get('zipcode')
 
-    properties = crud.get_properties_by_zipcode(zipcode)
-    if not properties:
-        return render_template('all_properties.html', search=False, MAP_API_KEY=MAP_API_KEY)
-    else:
-        dict_list = [obj.to_dict() for obj in properties]
-        json_data = json.dumps(dict_list, indent=2)
-        with open('static/data/results.json', 'w') as f:
-            # Write the JSON string to the file
-            f.write(json_data)
+    properties = crud.get_properties()
+    properties_by_zipcode = crud.get_properties_by_zipcode(zipcode)
 
-        return render_template('all_properties.html', search=True, MAP_API_KEY=MAP_API_KEY)
+    if not properties_by_zipcode:
+        return render_template('all_properties.html', search=False, MAP_API_KEY=MAP_API_KEY, properties=properties)
+    else:
+        return render_template('all_properties.html', search=True, MAP_API_KEY=MAP_API_KEY, properties_by_zipcode=properties_by_zipcode)
+
+
+
+@app.route('/properties.json')
+def propertiess():
+    """Return list of properties dictionary"""
+
+    properties = crud.get_properties()
+
+    # Convert the list of objects to a list of dictionaries
+    dict_list = [obj.to_dict() for obj in properties]
+
+    return jsonify(dict_list)
+
 
 
 @app.route('/users')
@@ -106,11 +105,8 @@ def show_user_favorites(user_id):
 
     user = crud.get_user_by_id(user_id)
     favorites = user.favorites
-    count = 0
-    for favorite in favorites:
-        count += 1
-
-    return render_template('user_favorites.html', user=user, count=count)
+  
+    return render_template('user_favorites.html', user=user, favorites=favorites)
 
 
 @app.route('/users/<user_id>/schedules')

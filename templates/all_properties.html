@@ -3,12 +3,7 @@
 
 
 {% block body %}
-  <h2>Navigation</h2>
-  <ul>
-    <li><a href="/properties">View all properties</a></li>
-    <li><a href="/users">View all users</a></li>
-  </ul>
-  <div class="search-container ">
+  <div class=" text-center">
     <form id="search_form" method="GET" action="/properties/search/api">
       <input type="text" name="zipcode" class="search-bar" placeholder="Search by zipcode">
       <button type="submit" class="search-button">Search</button>
@@ -17,19 +12,39 @@
   </div>
   <div id="root" class="grid grid-cols-2" >
     <div id="map" class="h-screen"></div>
-    {% if not search %}
-    <div id="all_properties_section" class=" relative"> </div>
-    {% endif %}
-    {% if search %}
-    <div id="searched_properties_section"></div>
-    {% endif %}
-    
+      {% if not search %}
+        <div id="all_properties_section">
+          <div class='cards_section mx-2'>
+            <p class="text-2xl">Properties For Sale</p>
+      
+            <div class='cards grid grid-cols-2 gap-2 place-content-stretch'>
+              {% for property in properties %}
+                {% include '_property_card.html' %}
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      <script src="/static/js/map.js"></script>
+      {% endif %}
+
+      {% if search %}
+        <div id="searched_properties_section">
+          <div class='cards_section mx-2'>
+            <p class="text-2xl">{{ properties_by_zipcode[0]["zipcode"] }} Properties For Sale</p>
+            <p class="text-xl">{{ properties_by_zipcode|length }} results</p>
+            <div class='cards grid grid-cols-2 gap-2 place-content-stretch'>
+              {% for property in properties_by_zipcode %}
+                {% include '_property_card.html' %}
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      <script src="/static/js/searched_map.js"></script>
+      {% endif %} 
+    </div>
   </div>
       
-  <script type="text/jsx" src="/static/js/property_card.jsx"></script>
-  <script type="text/jsx" src="/static/js/properties.jsx"></script>
-  <script type="text/jsx" src="/static/js/searched_properties.jsx"></script>
-  <script src="/static/js/map.js"></script>
+  
   <script
     async
     src="https://maps.googleapis.com/maps/api/js?key={{ MAP_API_KEY }}&callback=initMap">

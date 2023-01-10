@@ -28,46 +28,46 @@ function initMap() {
   });
 
   sfInfo.open(basicMap, sfMarker);
-
+ 
   fetch('/properties.json')
-    .then((response) => response.json())
-    .then((properties) => {
-      const markers = [];
-      for (const property of properties) {
-        const coords = {
-          lat: property.latitude,
-          lng: property.longitude,
-        }
-        markers.push(
-          new google.maps.Marker({
-            position: coords,
-            title: property.address,
-            map: basicMap,
-          }),
-        );
+  .then((response) => response.json())
+  .then((properties) => {
+    const markers = [];
+    for (const property of properties) {
+      const coords = {
+        lat: property.latitude,
+        lng: property.longitude,
       }
+      markers.push(
+        new google.maps.Marker({
+          position: coords,
+          title: property.address,
+          map: basicMap,
+        }),
+      );
+    }
 
-      for (const marker of markers) {
-        const markerInfo = `
-          <h1>${marker.title}</h1>
-          <p>
-            Located at: <code>${marker.position.lat()}</code>,
-            <code>${marker.position.lng()}</code>
-          </p>
-        `;
-    
-        const infoWindow = new google.maps.InfoWindow({
-          content: markerInfo,
-          maxWidth: 200,
-        });
-    
-        marker.addListener('mouseover', () => {
-          infoWindow.open(basicMap, marker);
-        });
-        marker.addListener('mouseout', () => {
-          infoWindow.close();
-        });
-      }
-    });
+    for (const marker of markers) {
+      const markerInfo = `
+        <h1>${marker.title}</h1>
+        <p>
+          Located at: <code>${marker.position.lat()}</code>,
+          <code>${marker.position.lng()}</code>
+        </p>
+      `;
+  
+      const infoWindow = new google.maps.InfoWindow({
+        content: markerInfo,
+        maxWidth: 200,
+      });
+  
+      marker.addListener('mouseover', () => {
+        infoWindow.open(basicMap, marker);
+      });
+      marker.addListener('mouseout', () => {
+        infoWindow.close();
+      });
+    }
+  });
 
 }
