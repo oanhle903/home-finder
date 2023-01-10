@@ -32,7 +32,7 @@ function Properties() {
 
 function PropertyCard({ property }) {
   return (
-    <div className="card ">
+    <div className="card  ">
       <div className='card_image'>
         <a href={`/properties/${property.zpid}`}>
           <img src={property.img_src} alt="Home" />

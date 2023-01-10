@@ -15,10 +15,10 @@
       
     </form>
   </div>
-  <div id="root" class="grid grid-cols-2">
-    <div id="map" class="h-96"></div>
+  <div id="root" class="grid grid-cols-2" >
+    <div id="map" class="h-screen"></div>
     {% if not search %}
-    <div id="all_properties_section"></div>
+    <div id="all_properties_section" class=" relative"> </div>
     {% endif %}
     {% if search %}
     <div id="searched_properties_section"></div>
@@ -29,7 +29,7 @@
   <script type="text/jsx" src="/static/js/property_card.jsx"></script>
   <script type="text/jsx" src="/static/js/properties.jsx"></script>
   <script type="text/jsx" src="/static/js/searched_properties.jsx"></script>
-  <script src="/static/js/mapdemo.js"></script>
+  <script src="/static/js/map.js"></script>
   <script
     async
     src="https://maps.googleapis.com/maps/api/js?key={{ MAP_API_KEY }}&callback=initMap">

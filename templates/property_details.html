@@ -3,9 +3,11 @@
 {% block title %}{{ property.address }} - Details{% endblock %}
 
 {% block body %}
-<div class="grid grid-cols-2 justify-items-center mt-4">
-    <div class="images gap-2">
-        <div class="d-flex justify-content-center mx-4">
+
+
+<div class="grid grid-cols-2 justify-items-center">
+    <div class="images grid grid-rows-2 gap-2 mx-3 mt-3">
+        <div class="d-flex justify-content-center">
             <div id="carouselExampleIndicators" class="carousel slide " data-bs-ride="carousel">
                 <div class="carousel-indicators">
                 {% for image in property.images %}
@@ -30,9 +32,16 @@
                 </button>
             </div>
         </div>
+        <div id="location-data" data-latitude="{{ property.latitude }}" data-longitude="{{ property.longitude }}" style="display: none;"></div>
+    
+        <div id="googlemap" class="w-full h-96 z-10 m-0 p-0 flex ">
+            <div id="streetmap" class="w-full h-full"  ></div>
+            <div id="pano" class="w-full h-full"></div>
+        </div>
+
     </div>
 
-    <div class="details">
+    <div class="details w-fit mt-4 mx-4 pd-4">
         {% if session.get("user_id") %}
         <div class="is-login" data-if-login="True"></div>
         {% else %}
@@ -108,6 +117,8 @@
     </div>
 </div>
 
+
+
 <script>
     const loginStatus = document.querySelector(".is-login");
     const favForm = document.querySelector("#favorite-form");
@@ -132,7 +143,7 @@
     dateFormat: "Y-m-d H:i",
     altInput: true,
     minDate: "today",
-    maxDate: new Date().fp_incr(60), // 14 days from now
+    maxDate: new Date().fp_incr(60), // 60 days from now
     "disable": [
         function(date) {
             return (date.getDay() === 0); // return true to disable
@@ -148,5 +159,10 @@
 
     flatpickr("input[type=datetime-local]", config);
 </script>
+
+<script src="/static/js/street_view.js"></script>
+
+<script async src="https://maps.googleapis.com/maps/api/js?key={{ MAP_API_KEY }}&callback=initialize"></script>
+
 
 {% endblock %}

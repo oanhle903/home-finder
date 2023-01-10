@@ -59,7 +59,7 @@ def property_details(zpid):
     is_favorite = crud.is_favorite(zpid)
     
 
-    return render_template('property_details.html', property=property, is_favorite=is_favorite)
+    return render_template('property_details.html', property=property, is_favorite=is_favorite,  MAP_API_KEY=MAP_API_KEY)
 
 
 
@@ -71,7 +71,7 @@ def find_searched_properties():
 
     properties = crud.get_properties_by_zipcode(zipcode)
     if not properties:
-        return render_template('all_properties.html', search=False)
+        return render_template('all_properties.html', search=False, MAP_API_KEY=MAP_API_KEY)
     else:
         dict_list = [obj.to_dict() for obj in properties]
         json_data = json.dumps(dict_list, indent=2)
@@ -79,7 +79,7 @@ def find_searched_properties():
             # Write the JSON string to the file
             f.write(json_data)
 
-        return render_template('all_properties.html', search=True)
+        return render_template('all_properties.html', search=True, MAP_API_KEY=MAP_API_KEY)
 
 
 @app.route('/users')
