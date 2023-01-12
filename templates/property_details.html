@@ -73,7 +73,7 @@
         </div>
 
         <div>
-            {% if session.get("user_id") %}
+            {% if session.get("user_id") and not is_scheduled %}
             <div id="request-tour-btn">
                 <!-- Button trigger schedule form modal -->
                 <button  type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -93,24 +93,19 @@
                     <div class="modal-body">
                         <form action="/properties/{{ property.zpid }}/schedule/create" method="POST">
                             <div class="mb-3">
-                                <label for="exampleFormControlInput1" class="form-label">Select Datetime</label>
-                                <input class="form-control" id="exampleFormControlInput1" type="datetime-local" name="datetime" placeholder="Select Datetime" required>
+                                <input class="form-control" id="input1" type="datetime-local" name="datetime" placeholder="Select Datetime" required>
                             </div>
                             <div class="mb-3">
-                                <label for="exampleFormControlInput2" class="form-label">Name</label>
-                                <input type="text" class="form-control" id="exampleFormControlInput2" placeholder="" required>
+                                <input type="text" class="form-control" id="input2" placeholder="Name" required>
                             </div>
                             <div class="mb-3">
-                                <label for="exampleFormControlInput3" class="form-label">Phone number</label>
-                                <input type="tel" class="form-control" id="exampleFormControlInput3" placeholder="" required>
+                                <input type="tel" class="form-control" id="input3" placeholder="Phone" required>
                             </div>
                             <div class="mb-3">
-                                <label for="exampleFormControlInput4" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="exampleFormControlInput4" value="{{ session.get('user_email', '') }}">
+                                <input type="email" class="form-control" id="input4" placeholder="Email" value="{{ session.get('user_email', '') }}">
                             </div>
                             <div class="mb-3">
-                                <label for="exampleFormControlTextarea1" class="form-label">Message</label>
-                                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                                <textarea class="form-control" id="textarea1" placeholder="Message" rows="3"></textarea>
                             </div>
                             <div class="d-flex justify-content-end mb-3 ">
                                 <button type="submit" class="btn btn-primary mb-3">Submit</button>

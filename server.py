@@ -46,9 +46,12 @@ def property_details(zpid):
     query the favortie table given that zpid and return is_favorite yes or no?
     """
     is_favorite = crud.is_favorite(zpid)
+    # is_scheduled = crud.is_scheduled(zpid)
+    now = datetime.now()
+    is_scheduled = Schedule.query.filter_by(zpid=zpid, is_canceled=False).filter(Schedule.when > now).first()
     
 
-    return render_template('property_details.html', property=property, is_favorite=is_favorite,  MAP_API_KEY=MAP_API_KEY)
+    return render_template('property_details.html', property=property, is_favorite=is_favorite, is_scheduled=is_scheduled,  MAP_API_KEY=MAP_API_KEY)
 
 
 
@@ -274,7 +277,7 @@ def update_schedule(zpid):
 
     # > 24 hours
     if days.days*86400 + days.seconds > 86400: 
-        tour_date = when
+        exist_schedule.when = when
         db.session.commit()
         flash(f"Your schedule has been updated successfully.")
     else:

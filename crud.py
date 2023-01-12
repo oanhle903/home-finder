@@ -83,8 +83,11 @@ def create_favorite(user, property):
     return favorite 
 
 def is_favorite(zpid):
+    """Check if this property is already favorited"""
     favorite = Favorite.query.filter_by(zpid=zpid).first()
-    return favorite is not None
+    
+    return favorite
+
 
 
 def get_favorite_by_user_and_property(user, property):
