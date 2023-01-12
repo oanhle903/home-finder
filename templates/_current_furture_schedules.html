@@ -1,0 +1,16 @@
+<div class="card mb-3" style="max-width: 540px;">
+  <div class="row g-0">
+  <div class="col-md-4">
+      <img src="{{ schedule.property.img_src }}" class="img-fluid rounded-start" alt="property image">
+  </div>
+  <div class="col-md-8">
+      <div class="card-body">
+      <h5 class="card-title">{{ schedule.property.address }}</h5>
+      <p class="card-text">{{ schedule.when }}</p>
+      <form action="/cancel"  method="POST">
+          <button type="hidden" type="submit" class="border border-black rounded-md" name="schedule_id" value={{ schedule.schedule_id }}>Cancel</button>
+      </form>
+      </div>
+  </div>
+  </div>
+</div>

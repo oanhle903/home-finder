@@ -4,7 +4,7 @@ from flask import (Flask, render_template, request, flash, session,
                    redirect, jsonify)
 from datetime import datetime
 import json
-from model import connect_to_db, db
+from model import connect_to_db, db, Schedule, Property, User
 import crud
 import os
 
@@ -238,6 +238,28 @@ def remove_favorite(zpid):
     return redirect(f"/users/{user.user_id}/favorites")
 
 
+# @app.route('/properties/<zpid>/book', methods=["POST"])
+# def create_schedule(zpid):
+#     """Create a new schedule to tour the property."""
+
+#     logged_in_email = session.get("user_email")
+
+#     if logged_in_email is None:
+#         flash("You must log in to book a tour.")
+#     else:
+#         request_datetime = request.form.get("datetime")
+#         user = crud.get_user_by_email(logged_in_email)
+#         property = crud.get_property_by_zpid(zpid)
+#         when = datetime.strptime(request_datetime, '%Y-%m-%d %H:%M')
+
+#         schedule = crud.create_schedule(user, property, when)
+#         db.session.add(schedule)
+#         db.session.commit()
+
+#         flash(f"You booked this time to tour the property")
+
+#     return redirect(f"/properties/{zpid}")
+
 @app.route('/properties/<zpid>/book', methods=["POST"])
 def create_schedule(zpid):
     """Create a new schedule to tour the property."""
@@ -252,13 +274,25 @@ def create_schedule(zpid):
         property = crud.get_property_by_zpid(zpid)
         when = datetime.strptime(request_datetime, '%Y-%m-%d %H:%M')
 
-        schedule = crud.create_schedule(user, property, when)
-        db.session.add(schedule)
-        db.session.commit()
-
-        flash(f"You booked this time to tour the property")
+        #Retrieve the existing schedule
+        now = datetime.now()
+        # is active but it has to be in current and furute not in the past
+        exist_schedule = Schedule.query.filter_by(user_id=user.user_id, zpid=property.zpid, is_canceled=False).filter(Schedule.when > now).first()
+        if exist_schedule is None:
+            # creat a new schedule
+            schedule = crud.create_schedule(user, property, when)
+            db.session.add(schedule)
+            db.session.commit()
+            flash(f"You booked this time to tour the property")
+        else:
+        # Update the schedule
+            schedule_to_update = exist_schedule
+            schedule_to_update.when = when
+            db.session.commit()
+            flash(f"Your schedule has been updated successfully.")
 
     return redirect(f"/properties/{zpid}")
+
 
 
 @app.route('/cancel', methods=["POST"])
@@ -284,38 +318,6 @@ def cancel_schedule():
 
     return redirect(f"/users/{user.user_id}/schedules")
 
-# @app.route('/properties/<zpid>/book', methods=["POST"])
-# def update_schedule(zpid):
-#     logged_in_email = session.get("user_email")
-#     user = crud.get_user_by_email(logged_in_email)
-#     property = crud.get_property_by_zpid(zpid)
-
-#     if logged_in_email is None:
-#         flash("You must log in to book a tour.")
-#     else:
-#         # Retrieve the existing schedule
-#         schedule = crud.get_schedule_by_user_and_property(user, property)
-#         if schedule is None:
-#             flash("You have not booked a tour for this property.")
-#             return redirect(f"/properties/{zpid}")
-        
-#         # Update the schedule
-#         request_datetime = request.form.get("datetime")
-#         when = datetime.strptime(request_datetime, '%Y-%m-%d %H:%M')
-#         schedule.when = when
-#         db.session.commit()
-    
-#     flash(f"You have updated the tour time for this property")
-#     return redirect(f"/properties/{zpid}")
-
-# @app.route("/reschedule", methods=["POST"])
-# def reschedule():
-#     schedule_id = request.json["schedule_id"]
-#     updated_score = request.json["updated_score"]
-#     Rating.update(schedule_id, updated_score)
-#     db.session.commit()
-
-#     return "Success"
 
 
 if __name__ == "__main__":

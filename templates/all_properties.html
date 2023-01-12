@@ -12,35 +12,35 @@
   </div>
   <div id="root" class="grid grid-cols-2" >
     <div id="map" class="h-screen"></div>
-      {% if not search %}
-        <div id="all_properties_section">
-          <div class='cards_section mx-2'>
-            <p class="text-2xl">Properties For Sale</p>
-      
-            <div class='cards grid grid-cols-2 gap-2 place-content-stretch'>
-              {% for property in properties %}
-                {% include '_property_card.html' %}
-              {% endfor %}
-            </div>
-          </div>
+    {% if not search %}
+    <div id="all_properties_section">
+      <div class='cards_section mx-2'>
+        <p class="text-2xl">Properties For Sale</p>
+  
+        <div class='cards grid grid-cols-2 gap-2 place-content-stretch'>
+          {% for property in properties %}
+            {% include '_property_card.html' %}
+          {% endfor %}
         </div>
-      <script src="/static/js/map.js"></script>
-      {% endif %}
+      </div>
+    </div>
+    <script src="/static/js/map.js"></script>
+    {% endif %}
 
-      {% if search %}
-        <div id="searched_properties_section">
-          <div class='cards_section mx-2'>
-            <p class="text-2xl">{{ properties_by_zipcode[0]["zipcode"] }} Properties For Sale</p>
-            <p class="text-xl">{{ properties_by_zipcode|length }} results</p>
-            <div class='cards grid grid-cols-2 gap-2 place-content-stretch'>
-              {% for property in properties_by_zipcode %}
-                {% include '_property_card.html' %}
-              {% endfor %}
-            </div>
-          </div>
+    {% if search %}
+    <div id="searched_properties_section">
+      <div class='cards_section mx-2'>
+        <p class="text-2xl">{{ properties_by_zipcode[0]["zipcode"] }} Properties For Sale</p>
+        <p class="text-xl">{{ properties_by_zipcode|length }} results</p>
+        <div class='cards grid grid-cols-2 gap-2 place-content-stretch'>
+          {% for property in properties_by_zipcode %}
+            {% include '_property_card.html' %}
+          {% endfor %}
         </div>
-      <script src="/static/js/searched_map.js"></script>
-      {% endif %} 
+      </div>
+    </div>
+    <script src="/static/js/searched_map.js"></script>
+    {% endif %} 
     </div>
   </div>
       

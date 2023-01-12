@@ -6,13 +6,12 @@
 
 
 <div class="grid grid-cols-2 justify-items-center">
-    <div class="images grid grid-rows-2 gap-2 mx-3 mt-3">
+    <div class="images-maps grid grid-rows-2 gap-2 mx-3 mt-3">
         <div class="d-flex justify-content-center">
-            <div id="carouselExampleIndicators" class="carousel slide " data-bs-ride="carousel">
+            <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-indicators">
                 {% for image in property.images %}
                     <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-            
                 {% endfor %}
                 </div>
                 <div class="carousel-inner">
@@ -32,6 +31,7 @@
                 </button>
             </div>
         </div>
+
         <div id="location-data" data-latitude="{{ property.latitude }}" data-longitude="{{ property.longitude }}" style="display: none;"></div>
     
         <div id="googlemap" class="w-full h-96 z-10 m-0 p-0 flex ">
@@ -71,46 +71,53 @@
             <p>Bedrooms: {{ property.bedrooms }}</p>
             <p>Lot Area: {{ property.lot_area_value }} {{ property.lot_area_unit }}</p>    
         </div>
-        
+
         <div>
-            <div class="accordion accordion-flush" id="accordionFlushExample">
-                <div class="accordion-item">
-                  <h2 class="accordion-header" id="flush-headingOne">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                      Request a tour
-                    </button>
-                  </h2>
-                  <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-                    <div class="accordion-body">
-                        <div id="schedule-button" >
-                            <form action="/properties/{{ property.zpid }}/book" method="POST">
-                                <div class="mb-3">
-                                    <label for="exampleFormControlInput1" class="form-label">Select Datetime</label>
-                                    <input class="form-control" id="exampleFormControlInput1" type="datetime-local" name="datetime" placeholder="Select Datetime" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="exampleFormControlInput1" class="form-label">Name</label>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="exampleFormControlInput1" class="form-label">Phone number</label>
-                                    <input type="tel" class="form-control" id="exampleFormControlInput1" placeholder="" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="exampleFormControlInput1" class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="exampleFormControlInput1" value="{{ session.get('user_email', '') }}">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="exampleFormControlTextarea1" class="form-label">Message</label>
-                                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-                                </div>
-                                <div class="mb-3">
-                                    <button type="submit" class="btn btn-primary mb-3">Submit</button>
-                                </div>
-                            </form>
-                        </div>
+            {% if session.get("user_id") %}
+            <div id="request-tour-btn">
+                <!-- Button trigger modal -->
+                <button  type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Request a tour
+                </button>
+            </div>
+            {% endif %}
+            
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Request a tour</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                  </div>
+                    <div class="modal-body">
+                        <form action="/properties/{{ property.zpid }}/book" method="POST">
+                            <div class="mb-3">
+                                <label for="exampleFormControlInput1" class="form-label">Select Datetime</label>
+                                <input class="form-control" id="exampleFormControlInput1" type="datetime-local" name="datetime" placeholder="Select Datetime" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleFormControlInput1" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleFormControlInput1" class="form-label">Phone number</label>
+                                <input type="tel" class="form-control" id="exampleFormControlInput1" placeholder="" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleFormControlInput1" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="exampleFormControlInput1" value="{{ session.get('user_email', '') }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleFormControlTextarea1" class="form-label">Message</label>
+                                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                            </div>
+                            <div class="d-flex justify-content-end mb-3 ">
+                                <button type="submit" class="btn btn-primary mb-3">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
                 </div>
             </div>
         </div>
@@ -123,7 +130,6 @@
     const loginStatus = document.querySelector(".is-login");
     const favForm = document.querySelector("#favorite-form");
     const accordionButton = document.querySelector(".accordion-button");
-
     const flag = loginStatus.dataset.ifLogin === "True"; // flag is true
 
     favForm.addEventListener("click", function(event) {
