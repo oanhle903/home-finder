@@ -75,7 +75,7 @@
         <div>
             {% if session.get("user_id") %}
             <div id="request-tour-btn">
-                <!-- Button trigger modal -->
+                <!-- Button trigger schedule form modal -->
                 <button  type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                     Request a tour
                 </button>
@@ -91,22 +91,22 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="/properties/{{ property.zpid }}/book" method="POST">
+                        <form action="/properties/{{ property.zpid }}/schedule/create" method="POST">
                             <div class="mb-3">
                                 <label for="exampleFormControlInput1" class="form-label">Select Datetime</label>
                                 <input class="form-control" id="exampleFormControlInput1" type="datetime-local" name="datetime" placeholder="Select Datetime" required>
                             </div>
                             <div class="mb-3">
-                                <label for="exampleFormControlInput1" class="form-label">Name</label>
-                                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="" required>
+                                <label for="exampleFormControlInput2" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput2" placeholder="" required>
                             </div>
                             <div class="mb-3">
-                                <label for="exampleFormControlInput1" class="form-label">Phone number</label>
-                                <input type="tel" class="form-control" id="exampleFormControlInput1" placeholder="" required>
+                                <label for="exampleFormControlInput3" class="form-label">Phone number</label>
+                                <input type="tel" class="form-control" id="exampleFormControlInput3" placeholder="" required>
                             </div>
                             <div class="mb-3">
-                                <label for="exampleFormControlInput1" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="exampleFormControlInput1" value="{{ session.get('user_email', '') }}">
+                                <label for="exampleFormControlInput4" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="exampleFormControlInput4" value="{{ session.get('user_email', '') }}">
                             </div>
                             <div class="mb-3">
                                 <label for="exampleFormControlTextarea1" class="form-label">Message</label>
@@ -120,10 +120,10 @@
                 </div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
-
 
 
 <script>
@@ -160,9 +160,8 @@
     },
     minTime: "09:00",
     maxTime: "18:00",
-
     }
-
+  
     flatpickr("input[type=datetime-local]", config);
 </script>
 

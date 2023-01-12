@@ -1,16 +1,88 @@
 <div class="card mb-3" style="max-width: 540px;">
   <div class="row g-0">
-  <div class="col-md-4">
-      <img src="{{ schedule.property.img_src }}" class="img-fluid rounded-start" alt="property image">
-  </div>
-  <div class="col-md-8">
-      <div class="card-body">
-      <h5 class="card-title">{{ schedule.property.address }}</h5>
-      <p class="card-text">{{ schedule.when }}</p>
-      <form action="/cancel"  method="POST">
-          <button type="hidden" type="submit" class="border border-black rounded-md" name="schedule_id" value={{ schedule.schedule_id }}>Cancel</button>
-      </form>
-      </div>
-  </div>
+    <div class="col-md-4">
+        <img src="{{ schedule.property.img_src }}" class="img-fluid rounded-start" alt="property image">
+    </div>
+    <div class="col-md-8">
+        <div class="card-body">
+          <h5 class="card-title">{{ schedule.property.address }}</h5>
+          <p class="card-text">{{ schedule.when }}</p>
+          <div class="mt-2 ">
+            <form action="/cancel"  method="POST">
+              <button type="submit" class="btn btn-info float-start me-2" name="schedule_id" value={{ schedule.schedule_id }}>Cancel</button>
+            </form>
+
+            <!-- Button trigger modal -->
+            <button  type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Reschedule
+            </button>
+            
+            
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Reschedule</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/properties/{{ schedule.property.zpid }}/schedule/update" method="POST">
+                            <div class="mb-3">
+                                <label for="exampleFormControlInput1" class="form-label">Select Datetime</label>
+                                <input class="form-control" id="exampleFormControlInput1" type="datetime-local" name="datetime" placeholder="Select Datetime" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleFormControlInput2" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput2" placeholder="" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleFormControlInput3" class="form-label">Phone number</label>
+                                <input type="tel" class="form-control" id="exampleFormControlInput3" placeholder="" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleFormControlInput4" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="exampleFormControlInput4" value="{{ session.get('user_email', '') }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleFormControlTextarea1" class="form-label">Message</label>
+                                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                            </div>
+                            <div class="d-flex justify-content-end mb-3 ">
+                                <button type="submit" class="btn btn-primary mb-3">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                </div>
+            </div>
+            
+          </div>       
+        </div>
+    </div>
   </div>
 </div>
+
+
+<script>
+  config = {
+  enableTime: true,
+  dateFormat: "Y-m-d H:i",
+  altInput: true,
+  minDate: "today",
+  maxDate: new Date().fp_incr(60), // 60 days from now
+  "disable": [
+      function(date) {
+          return (date.getDay() === 0); // return true to disable
+      }
+  ],
+  "locale": {
+      "firstDayOfWeek": 1 // start week on Monday
+  },
+  minTime: "09:00",
+  maxTime: "18:00",
+
+  }
+
+  flatpickr("input[type=datetime-local]", config);
+</script>
