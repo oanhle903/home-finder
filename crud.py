@@ -29,6 +29,7 @@ def get_user_by_email(email):
     return User.query.filter(User.email == email).first()
 
 
+
 def create_property(zpid, address, zipcode, property_type, price, bathrooms, bedrooms, lot_area_value, lot_area_unit, img_src, longitude, latitude):
     """Create and return a property."""
 
@@ -85,7 +86,7 @@ def create_favorite(user, property):
 def is_favorite(zpid):
     """Check if this property is already favorited"""
     favorite = Favorite.query.filter_by(zpid=zpid).first()
-    
+
     return favorite
 
 

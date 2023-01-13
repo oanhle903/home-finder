@@ -3,10 +3,29 @@
 {% block title %}{{ user.email }} - Favorites{% endblock %}
 
 {% block body %}
-
-
 <div class="mx-40 mt-2">
-    <p class="text-4xl mb-2">Favorite Properties</p>
+    <div class="flex">
+        <div>
+            <p class="text-4xl mb-2">Favorite Properties</p>
+        </div>
+        <div id="low-to-high">
+            <span class="text-2xl">Ascending</span>
+            <a href="/properties/favorites/sort/low">
+                <button class="text-2xl">
+                    <i class="fa-solid fa-arrow-up-wide-short "></i>
+                  </button>
+            </a>
+        </div>
+        <div id="high-to-low">
+            <span class="text-2xl">Descending</span>
+            <a href="/properties/favorites/sort/high">
+                <button  class="text-2xl"> 
+                    <i class="fa-solid fa-arrow-down-wide-short"></i>
+                </button>
+            </a>
+        </div>   
+    </div>
+
     <p class="text-xl mb-2">{{ favorites|length }} favorite properties</p>
 
     <div class='cards grid grid-cols-3 gap-3 justify-items-center'>
@@ -37,5 +56,6 @@
         {% endfor %}
     </div>
 </div>
+
 
 {% endblock %}

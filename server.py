@@ -102,15 +102,6 @@ def user_details(user_id):
     return render_template('user_details.html', user=user)
 
 
-@app.route('/users/<user_id>/favorites')
-def show_user_favorites(user_id):
-    """View details of a user's favorites"""
-
-    user = crud.get_user_by_id(user_id)
-    favorites = user.favorites
-  
-    return render_template('user_favorites.html', user=user, favorites=favorites)
-
 
 @app.route('/users/<user_id>/schedules')
 def user_schedules(user_id):
@@ -202,6 +193,18 @@ def check_login():
         return 'logged_out'
 
 
+
+@app.route('/users/<user_id>/favorites')
+def show_user_favorites(user_id):
+    """View details of a user's favorites"""
+
+    user = crud.get_user_by_id(user_id)
+    favorites = user.favorites
+  
+    return render_template('user_favorites.html', user=user, favorites=favorites)
+
+
+
 @app.route('/properties/<zpid>/favorite', methods=["POST"])
 def create_favorite(zpid):
     """Create a new favorite for the property."""
@@ -221,6 +224,26 @@ def create_favorite(zpid):
         flash(f"You added this property to favorites.")
 
     return redirect(f"/properties/{zpid}")
+
+
+
+@app.route('/properties/favorites/sort/<sort_order>', methods=["GET"])
+def sort_favorite(sort_order):
+    """Sort favorite properties by price."""
+
+    logged_in_email = session.get("user_email")
+    user = crud.get_user_by_email(logged_in_email)
+
+    if sort_order == 'low':
+        user.favorites = sorted(user.favorites, key=lambda x: x.property.price)
+    elif sort_order == 'high':
+        user.favorites = sorted(user.favorites, key=lambda x: x.property.price, reverse=True)
+
+
+    return render_template("user_favorites.html", user=user, favorites=user.favorites)
+
+
+
 
 @app.route('/properties/<zpid>/unfavorite', methods=["POST"])
 def remove_favorite(zpid):
