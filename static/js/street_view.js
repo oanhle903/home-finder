@@ -9,7 +9,7 @@ function initialize() {
   const fenway = { lat: lat, lng: lng };
   const map = new google.maps.Map(document.querySelector("#streetmap"), {
     center: fenway,
-    zoom: 14, 
+    zoom: 12, 
   });
   const panorama = new google.maps.StreetViewPanorama(
     document.querySelector("#pano"),

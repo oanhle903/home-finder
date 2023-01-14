@@ -3,47 +3,61 @@
 
 
 {% block body %}
-  <div class=" text-center">
-    <form id="search_form" method="GET" action="/properties/search/api">
-      <input type="text" name="zipcode" class="search-bar" placeholder="Search by zipcode">
-      <button type="submit" class="search-button">Search</button>
-      
-    </form>
-  </div>
-  <div id="root" class="grid grid-cols-2" >
-    <div id="map" class="h-screen"></div>
-    {% if not search %}
-    <div id="all_properties_section">
-      <div class='cards_section mx-2'>
-        <p class="text-2xl">Properties For Sale</p>
-  
-        <div class='cards grid grid-cols-2 gap-2 place-content-stretch'>
-          {% for property in properties %}
-            {% include '_property_card.html' %}
-          {% endfor %}
-        </div>
-      </div>
-    </div>
-    <script src="/static/js/map.js"></script>
-    {% endif %}
 
-    {% if search %}
-    <div id="searched_properties_section">
-      <div class='cards_section mx-2'>
-        <p class="text-2xl">{{ properties_by_zipcode[0]["zipcode"] }} Properties For Sale</p>
-        <p class="text-xl">{{ properties_by_zipcode|length }} results</p>
-        <div class='cards grid grid-cols-2 gap-2 place-content-stretch'>
-          {% for property in properties_by_zipcode %}
-            {% include '_property_card.html' %}
-          {% endfor %}
+<div class="">
+  <div id="root" class="grid grid-cols-2" >
+    <!-- Left side -->
+    <div>
+      <div class="text-center my-2 w-3/4">
+        <form id="search_form" method="GET" action="/properties/search/api">
+          <input type="text" name="zipcode" class="search-bar" placeholder="Search by zipcode">
+          <button type="submit" class="search-button text-white" style="background-color: #7fa100;">Search</button>
+        </form>
+      </div>
+      <div id="map" class="" style="height: 690px;"></div>
+    </div>
+    
+    
+    <!-- Right side -->
+    <div class=" h-screen overflow-y-auto">
+      {% if not search %}
+      <div id="all_properties_section ">
+        <div class='cards_section mx-2'>
+          <div class="mt-3 mb-2">
+            <p class="text-2xl text-center">Properties For Sale</p>
+          </div>
+          <div class='cards grid grid-cols-2 gap-2 place-content-stretch'>
+            {% for property in properties %}
+              {% include '_property_card.html' %}
+            {% endfor %}
+          </div>
+        </div>
+      
+      </div>
+      <script src="/static/js/map.js"></script>
+      {% endif %}
+
+      {% if search %}
+      <div id="searched_properties_section">
+        <div class='cards_section mx-2'>
+          <div class="mt-3 mb-2">
+            <span class="text-2xl ml-7">{{ properties_by_zipcode[0]["zipcode"] }} Properties For Sale</span>
+            <span class="text-xl float-right mr-7">{{ properties_by_zipcode|length }} results</span>
+          </div>
+          <div class='cards grid grid-cols-2 gap-2 place-content-stretch'>
+            {% for property in properties_by_zipcode %}
+              {% include '_property_card.html' %}
+            {% endfor %}
+          </div>
         </div>
       </div>
+      <script src="/static/js/searched_map.js"></script>
+      {% endif %} 
+
     </div>
-    <script src="/static/js/searched_map.js"></script>
-    {% endif %} 
-    </div>
+
   </div>
-      
+</div>
   
   <script
     async

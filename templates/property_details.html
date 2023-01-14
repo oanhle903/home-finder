@@ -4,121 +4,143 @@
 
 {% block body %}
 
+<div>
+    <div class="grid grid-cols-2 justify-items-center w-5/6 m-auto mt-4" style="height: 700px;">
 
-<div class="grid grid-cols-2 justify-items-center">
-    <div class="images-maps grid grid-rows-2 gap-2 mx-3 mt-3">
-        <div class="d-flex justify-content-center">
-            <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-indicators">
-                {% for image in property.images %}
-                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                {% endfor %}
-                </div>
-                <div class="carousel-inner">
-                    {% for image in property.images %}
-                    <div class="carousel-item{% if loop.index == 1 %} active{% endif %}">
-                        <img src="{{ image.url }}" class="d-block w-100" alt="...">
-                    </div>
-                    {% endfor %}
-                </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                  <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                  <span class="visually-hidden">Next</span>
-                </button>
-            </div>
-        </div>
-
-        <div id="location-data" data-latitude="{{ property.latitude }}" data-longitude="{{ property.longitude }}" style="display: none;"></div>
+        <!-- Left side -->
+        <div class="grid grid-rows-2" style="height: 700px;">
     
-        <div id="googlemap" class="w-full h-96 z-10 m-0 p-0 flex ">
-            <div id="streetmap" class="w-full h-full"  ></div>
-            <div id="pano" class="w-full h-full"></div>
-        </div>
-
-    </div>
-
-    <div class="details w-fit mt-4 mx-4 pd-4">
-        {% if session.get("user_id") %}
-        <div class="is-login" data-if-login="True"></div>
-        {% else %}
-        <div class="is-login" data-if-login="False"></div>
-        {% endif %}
-
-        {% if not is_favorite %}
-        <div class=" top-2.5 right-2.5 text-3xl">
-            <form id="favorite-form"  action="/properties/{{ property.zpid }}/favorite"  method="POST">
-              <button type="submit" class="border border-black rounded-md">Add to watchlist</button>
-            </form>
-        </div>
-        {% endif %}
-        <div class="my-2">
-            <span class="text-4xl font-semibold">${{ property.price }}</span>
-            <span>
-                <strong>{{ property.bedrooms }}</strong> bds |
-                <strong>{{ property.bathrooms }}</strong> ba |
-                <strong>{{ property.lot_area_value }}</strong> {{ property.lot_area_unit }}
-            </span>
-            <p class="text-2xl">{{ property.address }}</p>
-        </div>
-        <div class="my-2">
-            <p>{{ property.property_type }}</p>
-            <p>Price: ${{ property.price }}</p>
-            <p>Bathrooms: {{ property.bathrooms }}</p>
-            <p>Bedrooms: {{ property.bedrooms }}</p>
-            <p>Lot Area: {{ property.lot_area_value }} {{ property.lot_area_unit }}</p>    
-        </div>
-
-        <div>
-            {% if session.get("user_id") and not is_scheduled %}
-            <div id="request-tour-btn">
-                <!-- Button trigger schedule form modal -->
-                <button  type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                    Request a tour
-                </button>
-            </div>
-            {% endif %}
-            
-            <!-- Modal -->
-            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Request a tour</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div id="property-details" style="background-color: #f5f5f5;" class="flex items-center">
+                <div class="mx-auto" >
+                    <div class="my-2">
+                        <span class="text-4xl font-semibold">${{ property.price }}</span>
+                        <span>
+                            <strong>{{ property.bedrooms }}</strong> bds |
+                            <strong>{{ property.bathrooms }}</strong> ba |
+                            <strong>{{ property.lot_area_value }}</strong> {{ property.lot_area_unit }}
+                        </span>
                     </div>
-                    <div class="modal-body">
-                        <form action="/properties/{{ property.zpid }}/schedule/create" method="POST">
-                            <div class="mb-3">
-                                <input class="form-control" id="input1" type="datetime-local" name="datetime" placeholder="Select Datetime" required>
-                            </div>
-                            <div class="mb-3">
-                                <input type="text" class="form-control" id="input2" placeholder="Name" required>
-                            </div>
-                            <div class="mb-3">
-                                <input type="tel" class="form-control" id="input3" placeholder="Phone" required>
-                            </div>
-                            <div class="mb-3">
-                                <input type="email" class="form-control" id="input4" placeholder="Email" value="{{ session.get('user_email', '') }}">
-                            </div>
-                            <div class="mb-3">
-                                <textarea class="form-control" id="textarea1" placeholder="Message" rows="3"></textarea>
-                            </div>
-                            <div class="d-flex justify-content-end mb-3 ">
-                                <button type="submit" class="btn btn-primary mb-3">Submit</button>
-                            </div>
+                    <p class="text-2xl">{{ property.address }}</p>
+                    <div class="my-2">
+                        <p>{{ property.property_type }}</p>
+                        <p>Price: ${{ property.price }}</p>
+                        <p>Bathrooms: {{ property.bathrooms }}</p>
+                        <p>Bedrooms: {{ property.bedrooms }}</p>
+                        <p>Lot Area: {{ property.lot_area_value }} {{ property.lot_area_unit }}</p>    
+                    </div>
+                </div>
+            </div>
+    
+    
+            <div id="images" class="d-flex justify-content-center">
+                <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-indicators">
+                    {% for image in property.images %}
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                    {% endfor %}
+                    </div>
+                    <div class="carousel-inner" style="height: 350px;">
+                        {% for image in property.images %}
+                        <div class="carousel-item{% if loop.index == 1 %} active{% endif %}">
+                            <img src="{{ image.url }}" class="d-block w-100" alt="...">
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                      <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                      <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+    
+            <div id="location-data" data-latitude="{{ property.latitude }}" data-longitude="{{ property.longitude }}" style="display: none;"></div>
+    
+    
+        </div>
+    
+    
+        <!-- Right side -->
+        <div class="grid grid-rows-2 w-full" style="height: 700px;">
+            {% if session.get("user_id") %}
+            <div class="hidden is-login" data-if-login="True"></div>
+            {% else %}
+            <div class="hidden is-login" data-if-login="False"></div>
+            {% endif %}
+    
+    
+            <div id="googlemap" class="w-full flex ">
+                <div id="streetmap" class="w-full h-full"  ></div>
+                <div id="pano" class="w-full h-full"></div>
+            </div>
+    
+    
+            <div id="tour-favorite" class="flex items-center" style="background-color: #f5f5f5;">
+                <div class="mx-auto">
+                    {% if not is_favorite %}
+                    <div id="favorite-section" class="flex items-center justify-center my-3">
+                        <form id="favorite-form"  action="/properties/{{ property.zpid }}/favorite"  method="POST">
+                          <button type="submit" class="text-white rounded text-xl py-2 px-6" style="background-color: #7fa100;">Add to watchlist</button>
+                          
                         </form>
                     </div>
-                </div>
+                    {% endif %}
+
+                    <div id="tour-section">
+                        {% if session.get("user_id") and not is_scheduled %}
+                        <div id="request-tour-btn" class="my-3">
+                            <!-- Button trigger schedule form modal -->
+                            <button type="button" class="text-white rounded text-xl py-2 px-7" data-bs-toggle="modal" data-bs-target="#exampleModal" style="background-color: #7fa100;">
+                                Request a tour
+                            </button> 
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Modal -->
+                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Request a tour</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="/properties/{{ property.zpid }}/schedule/create" method="POST">
+                                        <div class="mb-3">
+                                            <input class="form-control" id="input1" type="datetime-local" name="datetime" placeholder="Select Datetime" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <input type="text" class="form-control" id="input2" placeholder="Name" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <input type="tel" class="form-control" id="input3" placeholder="Phone" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <input type="email" class="form-control" id="input4" placeholder="Email" value="{{ session.get('user_email', '') }}">
+                                        </div>
+                                        <div class="mb-3">
+                                            <textarea class="form-control" id="textarea1" placeholder="Message" rows="3"></textarea>
+                                        </div>
+                                        <div class="d-flex justify-content-end mb-3 ">
+                                            <button type="submit" class="btn btn-primary mb-3">Submit</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-
         </div>
+    
     </div>
 </div>
+
+
 
 
 <script>

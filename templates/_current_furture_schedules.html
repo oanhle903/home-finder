@@ -9,11 +9,11 @@
           <p class="card-text">{{ schedule.when }}</p>
           <div class="mt-2 ">
             <form action="/cancel"  method="POST">
-              <button type="submit" class="btn btn-info float-start me-2" name="schedule_id" value={{ schedule.schedule_id }}>Cancel</button>
+              <button type="submit" class="btn float-start me-2 text-white" name="schedule_id" value={{ schedule.schedule_id }} style="background-color: #7fa100;">Cancel</button>
             </form>
 
             <!-- Button trigger modal -->
-            <button  type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <button  type="button" class="btn text-white" style="background-color: #7fa100;" data-bs-toggle="modal" data-bs-target="#exampleModal">
                 Reschedule
             </button>
             

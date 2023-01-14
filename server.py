@@ -7,6 +7,7 @@ import json
 from model import connect_to_db, db, Schedule, Property, User
 import crud
 import os
+import random
 
 from jinja2 import StrictUndefined
 app = Flask(__name__)
@@ -22,7 +23,10 @@ MAP_API_KEY = os.environ.get('MAP_API')
 def homepage():
     """View homepage"""
 
-    return render_template('homepage.html')
+    properties = crud.get_properties()
+    random_properties = random.sample(properties, 4)
+
+    return render_template('homepage.html', random_properties=random_properties)
 
 
 @app.route('/properties')
@@ -46,8 +50,9 @@ def property_details(zpid):
     query the favortie table given that zpid and return is_favorite yes or no?
     """
     is_favorite = crud.is_favorite(zpid)
-    # is_scheduled = crud.is_scheduled(zpid)
     now = datetime.now()
+    
+    # check if property is scheduled, if it is, it has to be active at the time of current or future time
     is_scheduled = Schedule.query.filter_by(zpid=zpid, is_canceled=False).filter(Schedule.when > now).first()
     
 
