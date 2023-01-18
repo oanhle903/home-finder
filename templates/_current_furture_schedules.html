@@ -1,7 +1,9 @@
 <div class="card mb-3" style="max-width: 540px;">
   <div class="row g-0">
     <div class="col-md-4">
-        <img src="{{ schedule.property.img_src }}" class="img-fluid rounded-start" alt="property image">
+        <a href="/properties/{{ schedule.property.zpid }}">
+            <img src="{{ schedule.property.img_src }}" class="img-fluid rounded-start" alt="property image">
+        </a>
     </div>
     <div class="col-md-8">
         <div class="card-body">
@@ -13,13 +15,13 @@
             </form>
 
             <!-- Button trigger modal -->
-            <button  type="button" class="btn text-white" style="background-color: #7fa100;" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <button  type="button" class="btn text-white" style="background-color: #7fa100;" data-bs-toggle="modal" data-bs-target="#exampleModal-{{ schedule.property.zpid }}">
                 Reschedule
             </button>
             
             
             <!-- Modal -->
-            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal fade" id="exampleModal-{{ schedule.property.zpid }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -28,6 +30,7 @@
                     </div>
                     <div class="modal-body">
                         <form action="/properties/{{ schedule.property.zpid }}/schedule/update" method="POST">
+                            <input type="hidden" name="rescheduled_zpid" value="{{ schedule.property.zpid }}">
                             <div class="mb-3">
                                 <input class="form-control" id="input1" type="datetime-local" name="datetime" placeholder="Select Datetime" required>
                             </div>
@@ -36,9 +39,6 @@
                             </div>
                             <div class="mb-3">
                                 <input type="tel" class="form-control" id="input3" placeholder="Phone" required>
-                            </div>
-                            <div class="mb-3">
-                                <input type="email" class="form-control" id="input4" placeholder="Email" value="{{ session.get('user_email', '') }}">
                             </div>
                             <div class="mb-3">
                                 <textarea class="form-control" id="textarea1" placeholder="Message" rows="3"></textarea>

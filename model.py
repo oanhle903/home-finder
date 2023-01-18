@@ -100,7 +100,7 @@ class Schedule(db.Model):
     property = db.relationship("Property", back_populates="schedules")
 
     def __repr__(self):
-        return f"<Scheudle schedule_id={self.schedule_id}  when={self.when}>"
+        return f"<Scheudle schedule_id={self.schedule_id} address={self.property.address}  when={self.when}>"
 
 
 

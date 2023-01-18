@@ -67,6 +67,39 @@ def get_properties_by_zipcode(zipcode):
 
     return Property.query.filter(Property.zipcode == zipcode).all()
 
+def filter_properties(properties, min_price=None, max_price=None, bedrooms=None, bathrooms=None):
+    """Filter properties"""
+    query = db.session.query(Property)
+
+    if min_price:
+        query = query.filter(Property.price >= min_price)
+    if max_price:
+        query = query.filter(Property.price <= max_price)
+
+    if bedrooms == "1+":
+        query = query.filter(Property.bedrooms >= 1)
+    elif bedrooms == "2+":
+        query = query.filter(Property.bedrooms >= 2)
+    elif bedrooms == "3+":
+        query = query.filter(Property.bedrooms >= 3)
+    elif bedrooms == "4+":
+        query = query.filter(Property.bedrooms >= 4)
+
+    if bathrooms == "1+":
+        query = query.filter(Property.bathrooms >= 1)
+    elif bathrooms == "2+":
+        query = query.filter(Property.bathrooms >= 2)
+    elif bathrooms == "3+":
+        query = query.filter(Property.bathrooms >= 3)
+    elif bathrooms == "4+":
+        query = query.filter(Property.bathrooms >= 4)
+    
+    # in_() method is expecting a list of values, but properties is a list of object of Property objects
+    zpids = [property.zpid for property in properties]
+    query = query.filter(Property.zpid.in_(zpids))
+
+    return query.all()
+
 
 def create_image(zpid, url):
     """Create and return a property."""

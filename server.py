@@ -8,6 +8,7 @@ from model import connect_to_db, db, Schedule, Property, User
 import crud
 import os
 import random
+from sqlalchemy import and_
 
 from jinja2 import StrictUndefined
 app = Flask(__name__)
@@ -60,19 +61,35 @@ def property_details(zpid):
 
 
 
+
 @app.route('/properties/search/api')
 def find_searched_properties():
     """Search for properties"""
 
     zipcode = request.args.get('zipcode')
+    min_price = request.args.get('minPrice')
+    max_price = request.args.get('maxPrice')
+    bedrooms = request.args.get('bedrooms')
+    bathrooms = request.args.get('bathrooms')
 
     properties = crud.get_properties()
+
+    zipcodes = set()
+    for property in properties:
+        zipcodes.add(property.zipcode)
+
     properties_by_zipcode = crud.get_properties_by_zipcode(zipcode)
 
     if not properties_by_zipcode:
         return render_template('all_properties.html', search=False, MAP_API_KEY=MAP_API_KEY, properties=properties)
     else:
-        return render_template('all_properties.html', search=True, MAP_API_KEY=MAP_API_KEY, properties_by_zipcode=properties_by_zipcode)
+        if min_price or max_price or bedrooms:
+            filtered_properties = crud.filter_properties(properties_by_zipcode, min_price, max_price, bedrooms, bathrooms)
+            return render_template('all_properties.html', search=True, MAP_API_KEY=MAP_API_KEY, properties=filtered_properties)
+        else:
+            return render_template('all_properties.html', search=True, MAP_API_KEY=MAP_API_KEY, properties=properties_by_zipcode)
+
+
 
 
 
@@ -106,34 +123,6 @@ def user_details(user_id):
 
     return render_template('user_details.html', user=user)
 
-
-
-@app.route('/users/<user_id>/schedules')
-def user_schedules(user_id):
-    """View details of a user's schedules"""
-
-    user = crud.get_user_by_id(user_id)
-    schedules = user.schedules
-    canceled_schedules = [s for s in schedules if s.is_canceled]
-
-    current_schedules = []
-    past_schedules = []
-    future_schedules = []
-
-    for schedule in schedules:
-        tour_date = schedule.when  
-        now = datetime.now()
-        days = tour_date - now  # = datetime.timedelta(days=2, seconds=57433, microseconds=667989)
-        
-        # days.days == 0 means same day
-        if days.days == 0 and tour_date >= now:
-            current_schedules.append(schedule)
-        elif tour_date < now:
-            past_schedules.append(schedule)
-        else:
-            future_schedules.append(schedule)
-
-    return render_template('user_schedules.html', user=user, current_schedules=current_schedules, past_schedules=past_schedules, future_schedules=future_schedules, canceled_schedules=canceled_schedules)
 
 
 @app.route('/users', methods=['POST'])
@@ -270,6 +259,34 @@ def remove_favorite(zpid):
     
 
 
+@app.route('/users/<user_id>/schedules')
+def user_schedules(user_id):
+    """Sshow details of a user's schedules page"""
+
+    user = crud.get_user_by_id(user_id)
+    schedules = user.schedules
+    canceled_schedules = [s for s in schedules if s.is_canceled]
+
+    current_schedules = []
+    past_schedules = []
+    future_schedules = []
+
+    for schedule in schedules:
+        tour_date = schedule.when  
+        now = datetime.now()
+        days = tour_date - now  # = datetime.timedelta(days=2, seconds=57433, microseconds=667989)
+        
+        # days.days == 0 means same day
+        if days.days == 0 and tour_date >= now:
+            current_schedules.append(schedule)
+        elif tour_date < now:
+            past_schedules.append(schedule)
+        else:
+            future_schedules.append(schedule)
+
+    return render_template('user_schedules.html', user=user, current_schedules=current_schedules, past_schedules=past_schedules, future_schedules=future_schedules, canceled_schedules=canceled_schedules)
+
+
 @app.route('/properties/<zpid>/schedule/create', methods=["POST"])
 def create_schedule(zpid):
     """Create a new schedule to tour the property."""
@@ -283,6 +300,7 @@ def create_schedule(zpid):
     db.session.add(schedule)
     db.session.commit()
     flash(f"You booked this time to tour the property")
+
     return redirect(f"/properties/{zpid}")
  
 
@@ -290,22 +308,29 @@ def create_schedule(zpid):
 @app.route('/properties/<zpid>/schedule/update', methods=["POST"])
 def update_schedule(zpid):
     """Updates an existing schedule with a new datetime."""
+    
+    zpid = request.form.get('rescheduled_zpid')
+    print("zpiddddd: ", zpid)
     logged_in_email = session.get("user_email")
-    request_datetime = request.form.get("datetime")
-    when = datetime.strptime(request_datetime, '%Y-%m-%d %H:%M')
+    new_request_datetime = request.form.get("datetime")
+    new_when = datetime.strptime(new_request_datetime, '%Y-%m-%d %H:%M')
+    print("when: ", new_when)
     user = crud.get_user_by_email(logged_in_email)
-    property = crud.get_property_by_zpid(zpid)
+    
 
     now = datetime.now()
-    exist_schedule = Schedule.query.filter_by(user_id=user.user_id, zpid=property.zpid, is_canceled=False).filter(Schedule.when > now).first()
+
+    exist_schedule = db.session.query(Schedule).filter(and_(Schedule.user_id == user.user_id, Schedule.zpid == zpid, Schedule.is_active == True, Schedule.when > now)).first()
+    print("exist_schedule: ", exist_schedule)
 
     """Updates an existing schedule with a new datetime."""
     tour_date = exist_schedule.when 
+    
     days = tour_date - now
 
     # > 24 hours
     if days.days*86400 + days.seconds > 86400: 
-        exist_schedule.when = when
+        exist_schedule.when = new_when
         db.session.commit()
         flash(f"Your schedule has been updated successfully.")
     else:
@@ -313,6 +338,24 @@ def update_schedule(zpid):
 
     return redirect(f"/users/{user.user_id}/schedules")
     
+
+# @app.route('/properties/<zpid>/schedule/update', methods=["POST"])
+# def update_schedule(zpid):
+#     zpid = request.form.get("zpid")
+#     logged_in_email = session.get("user_email")
+#     new_request_datetime = request.form.get("datetime")
+#     new_when = datetime.strptime(new_request_datetime, '%Y-%m-%d %H:%M')
+#     user = crud.get_user_by_email(logged_in_email)
+#     now = datetime.now()
+#     exist_schedule = db.session.query(Schedule).filter(and_(Schedule.user_id == user.user_id, Schedule.is_active == True, Schedule.when > now, Schedule.zpid == zpid)).first()
+#     tour_date = exist_schedule.when 
+#     days = tour_date - now
+#     if days.days*86400 + days.seconds > 86400: 
+#         exist_schedule.when = new_when
+#         db.session.commit()
+#         flash(f"Your schedule has been updated successfully.")
+#     else:
+#         flash(f"You cannot reschedule it before 24 hours")
 
 
 @app.route('/cancel', methods=["POST"])

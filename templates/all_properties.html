@@ -5,15 +5,76 @@
 {% block body %}
 
 <div class="">
+  <div class="">
+    <form id="search_form" method="GET" action="/properties/search/api">
+      <div class="d-flex justify-content-center my-2 gap-3">
+        <div class="dropdown d-inline-block border border-1 rounded">
+          <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Price</button>
+          <div class="dropdown-menu">
+            <div class="">
+              <label for="min-price">Min Price</label>
+      
+              <select name="minPrice" id="min-price">
+                <option value="0">$0</option>
+                <option value="400000">$400,000</option>
+                <option value="500000">$500,000</option>
+              </select>
+            </div>
+            <span>--</span>
+            <div>
+              <label for="max-price">Max Price</label>
+      
+              <select name="maxPrice" id="max-price">
+                <option value="">Any Price</option>
+                <option value="800000">$800,000</option>
+                <option value="1000000">$1M</option>
+                <option value="1250000">$1.25M</option>
+              </select>
+            </div>
+          </div>
+        </div>  
+  
+        <div class="dropdown d-inline-block border border-1 rounded">
+          <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Bedrooms</button>
+          <div class="dropdown-menu">
+            <div class="">
+              <select name="bedrooms" id="bedrooms">
+                <option value="">Any</option>
+                <option value="1+">1+</option>
+                <option value="2+">2+</option>
+                <option value="3+">3+</option>
+                <option value="4+">4+</option>
+              </select>
+            </div>
+          </div>
+        </div> 
+  
+        <div class="dropdown d-inline-block border border-1 rounded">
+          <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Bathrooms</button>
+          <div class="dropdown-menu">
+            <div class="">
+              <select name="bathrooms" id="bathrooms">
+                <option value="">Any</option>
+                <option value="1+">1+</option>
+                <option value="2+">2+</option>
+                <option value="3+">3+</option>
+                <option value="4+">4+</option>
+              </select>
+            </div>
+          </div>
+        </div> 
+        <div class="d-flex w-25">
+          <input type="text" name="zipcode" class="form-control" placeholder="Search by zipcode">
+          <button type="submit" class="btn text-white" style="background-color: #7fa100;">Search</button>
+        </div>
+      </div>
+      
+    </form>
+
+  </div>
   <div id="root" class="grid grid-cols-2" >
     <!-- Left side -->
     <div>
-      <div class="text-center my-2 w-3/4">
-        <form id="search_form" method="GET" action="/properties/search/api">
-          <input type="text" name="zipcode" class="search-bar" placeholder="Search by zipcode">
-          <button type="submit" class="search-button text-white" style="background-color: #7fa100;">Search</button>
-        </form>
-      </div>
       <div id="map" class="" style="height: 690px;"></div>
     </div>
     
@@ -41,11 +102,16 @@
       <div id="searched_properties_section">
         <div class='cards_section mx-2'>
           <div class="mt-3 mb-2">
-            <span class="text-2xl ml-7">{{ properties_by_zipcode[0]["zipcode"] }} Properties For Sale</span>
-            <span class="text-xl float-right mr-7">{{ properties_by_zipcode|length }} results</span>
+            {% if properties %}
+              <span class="text-2xl ml-7">{{ properties[0]["zipcode"] }} Properties For Sale</span>
+            {% else %}
+              <span class="text-2xl ml-7">No properties found matching your criteria</span>
+            {% endif %}
+
+            <span class="text-xl float-right mr-7">{{ properties|length }} results</span>
           </div>
           <div class='cards grid grid-cols-2 gap-2 place-content-stretch'>
-            {% for property in properties_by_zipcode %}
+            {% for property in properties %}
               {% include '_property_card.html' %}
             {% endfor %}
           </div>
