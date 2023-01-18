@@ -8,7 +8,7 @@
     <div class="grid grid-cols-2 justify-items-center w-5/6 m-auto mt-4" style="height: 700px;">
 
         <!-- Left side -->
-        <div class="grid grid-rows-2" style="height: 700px;">
+        <div class="grid grid-rows-2 w-full" style="height: 700px;">
     
             <div id="property-details" style="background-color: #f5f5f5;" class="flex items-center">
                 <div class="mx-auto" >
@@ -31,34 +31,32 @@
                 </div>
             </div>
     
-    
-            <div id="images" class="d-flex justify-content-center">
-                <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+            <div id="images" class="d-flex justify-content-center ">
+                <div id="carouselExampleIndicators" class="carousel slide h-full" data-bs-ride="carousel">
                     <div class="carousel-indicators">
                     {% for image in property.images %}
                         <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
                     {% endfor %}
                     </div>
-                    <div class="carousel-inner" style="height: 350px;">
+                    <div class="carousel-inner h-full" >
                         {% for image in property.images %}
-                        <div class="carousel-item{% if loop.index == 1 %} active{% endif %}">
-                            <img src="{{ image.url }}" class="d-block w-100" alt="...">
+                        <div class="carousel-item{% if loop.index == 1 %} active{% endif %} ">
+                            <img src="{{ image.url }}" alt="house images">
                         </div>
                         {% endfor %}
                     </div>
                     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                      <span class="visually-hidden">Previous</span>
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
                     </button>
                     <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                      <span class="visually-hidden">Next</span>
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
                     </button>
                 </div>
             </div>
     
             <div id="location-data" data-latitude="{{ property.latitude }}" data-longitude="{{ property.longitude }}" style="display: none;"></div>
-    
     
         </div>
     

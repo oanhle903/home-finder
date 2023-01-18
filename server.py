@@ -34,9 +34,11 @@ def homepage():
 def all_properties():
     """View all properties"""
     properties = crud.get_properties()
+    zipcodes = set()
+    for property in properties:
+        zipcodes.add(property.zipcode)
 
-
-    return render_template('all_properties.html', search=False, MAP_API_KEY=MAP_API_KEY, properties=properties)
+    return render_template('all_properties.html', search=False, MAP_API_KEY=MAP_API_KEY, properties=properties, zipcodes=zipcodes)
 
 
 
@@ -81,13 +83,14 @@ def find_searched_properties():
     properties_by_zipcode = crud.get_properties_by_zipcode(zipcode)
 
     if not properties_by_zipcode:
-        return render_template('all_properties.html', search=False, MAP_API_KEY=MAP_API_KEY, properties=properties)
+        return render_template('all_properties.html', search=False, MAP_API_KEY=MAP_API_KEY, properties=properties,zipcodes=zipcodes )
     else:
-        if min_price or max_price or bedrooms:
+        if min_price or max_price or bedrooms or bathrooms:
             filtered_properties = crud.filter_properties(properties_by_zipcode, min_price, max_price, bedrooms, bathrooms)
-            return render_template('all_properties.html', search=True, MAP_API_KEY=MAP_API_KEY, properties=filtered_properties)
+            print(filtered_properties)
+            return render_template('all_properties.html', search=True, MAP_API_KEY=MAP_API_KEY, properties=filtered_properties, zipcodes=zipcodes)
         else:
-            return render_template('all_properties.html', search=True, MAP_API_KEY=MAP_API_KEY, properties=properties_by_zipcode)
+            return render_template('all_properties.html', search=True, MAP_API_KEY=MAP_API_KEY, properties=properties_by_zipcode, zipcodes=zipcodes)
 
 
 
@@ -308,7 +311,7 @@ def create_schedule(zpid):
 @app.route('/properties/<zpid>/schedule/update', methods=["POST"])
 def update_schedule(zpid):
     """Updates an existing schedule with a new datetime."""
-    
+
     zpid = request.form.get('rescheduled_zpid')
     print("zpiddddd: ", zpid)
     logged_in_email = session.get("user_email")

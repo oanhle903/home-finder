@@ -62,18 +62,8 @@
             {% endif %}
           
             {% if session.get("user_id") %}
-            <li class="nav-item dropdown mx-3" id="my-profile">
-              <a class="nav-link dropdown-toggle text-black text-lg" href="#"  data-bs-toggle="dropdown" aria-expanded="false">
-                My Profile
-              </a>
-              <ul class="dropdown-menu">
-                <li>
-                  <a class="dropdown-item text-black" href="#">Account settings</a>
-                </li>
-                <li>
-                  <a class="dropdown-item text-black" href="/logout">Sign out</a>
-                </li>
-              </ul>
+            <li class="nav-item mx-3" >
+              <a class="nav-link text-black text-lg" href="/logout">Sign out</a>
             </li>
             {% endif %}
           </ul>
