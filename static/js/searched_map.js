@@ -26,46 +26,51 @@ function initMap() {
   sfInfo.open(basicMap, sfMarker);
  
 
+  const propertyInfo = new google.maps.InfoWindow();
+  
   const searchedData = document.querySelectorAll('.property-data');
 
-  const markers = [];
   for (const div of searchedData) {
-    console.log(div);
-    const coords = {
-      lat: +div.dataset.latitude,
-      lng: +div.dataset.longitude,
-    }
-    markers.push(
-      new google.maps.Marker({
-        position: coords,
-        title: div.dataset.address,
-        map: basicMap,
-      }),
-    );
-  }
+    const property = div.dataset;
 
+    const propertyInfoContent = `
+      <div class="window-content relative flex w-72 h-24 rounded">
+        <div class="relative w-1/2 h-full">
+          <div class="property-thumbnail absolute h-full w-full ">
+            <a href="/properties/${property.zpid}">
+              <img
+                class="object-cover w-full h-full"
+                src="${property.img}"
+                alt="houses"
+              />
+            </a>
+          </div>
+        </div>
 
+        <div class="property-info pl-4">
+          <p class="text-2xl font-semibold my-1">$${property.price}</p>
+          <p class="my-1"><strong>${property.bedrooms}</strong> bds |
+          <strong>${property.bathrooms}</strong> ba |
+          <strong>${property.lot_area_value}</strong> ${property.lot_area_unit}
+          </p>
+          <p>${property.address}</p>
+        </div>
 
-  for (const marker of markers) {
-    const markerInfo = `
-      <h1>${marker.title}</h1>
-      <p>
-        Located at: <code>${marker.position.lat()}</code>,
-        <code>${marker.position.lng()}</code>
-      </p>
+      </div>
     `;
 
-    const infoWindow = new google.maps.InfoWindow({
-      content: markerInfo,
-      maxWidth: 200,
+    const propertyMarker = new google.maps.Marker({
+      position: {
+        lat: +property.latitude,
+        lng: +property.longitude,
+      },
+      map: basicMap, // same as saying map: map
     });
 
-    marker.addListener('mouseover', () => {
-      infoWindow.open(basicMap, marker);
-    });
-    marker.addListener('mouseout', () => {
-      infoWindow.close();
+    propertyMarker.addListener('click', () => {
+      propertyInfo.close();
+      propertyInfo.setContent(propertyInfoContent);
+      propertyInfo.open(basicMap, propertyMarker);
     });
   }
-
 }

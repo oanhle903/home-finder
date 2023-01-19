@@ -19,55 +19,62 @@ function initMap() {
     map: basicMap,
   });
 
-  sfMarker.addListener('click', () => {
-    alert('Hi!');
-  });
-
   const sfInfo = new google.maps.InfoWindow({
     content: '<h1>San Francisco Bay!</h1>',
   });
 
   sfInfo.open(basicMap, sfMarker);
+
+  const propertyInfo = new google.maps.InfoWindow();
  
   fetch('/properties.json')
   .then((response) => response.json())
   .then((properties) => {
-    const markers = [];
     for (const property of properties) {
-      const coords = {
-        lat: property.latitude,
-        lng: property.longitude,
-      }
-      markers.push(
-        new google.maps.Marker({
-          position: coords,
-          title: property.address,
-          map: basicMap,
-        }),
-      );
-    }
+      const propertyInfoContent = `
+        <div class="window-content relative flex w-72 h-24 rounded">
+          <div class="relative w-1/2 h-full">
+            <div class="property-thumbnail absolute h-full w-full ">
+              <a href="/properties/${property.zpid}">
+                <img
+                  class="object-cover w-full h-full"
+                  src="${property.img_src}"
+                  alt="houses"
+                />
+              </a>
+            </div>
+          </div>
 
-    for (const marker of markers) {
-      const markerInfo = `
-        <h1>${marker.title}</h1>
-        <p>
-          Located at: <code>${marker.position.lat()}</code>,
-          <code>${marker.position.lng()}</code>
-        </p>
+          <div class="property-info pl-4">
+            <p class="text-2xl font-semibold my-1">$${property.price}</p>
+            <p class="my-1"><strong>${property.bedrooms}</strong> bds |
+              <strong>${property.bathrooms}</strong> ba |
+              <strong>${property.lot_area_value}</strong> ${property.lot_area_unit}
+            </p>
+            <p>${property.address}</p>
+          </div>
+
+        </div>
       `;
-  
-      const infoWindow = new google.maps.InfoWindow({
-        content: markerInfo,
-        maxWidth: 200,
+
+      const propertyMarker = new google.maps.Marker({
+        position: {
+          lat: property.latitude,
+          lng: property.longitude,
+        },
+        title: property.address,
+        map: basicMap, // same as saying map: map
       });
-  
-      marker.addListener('mouseover', () => {
-        infoWindow.open(basicMap, marker);
-      });
-      marker.addListener('mouseout', () => {
-        infoWindow.close();
+
+      propertyMarker.addListener('click', () => {
+        propertyInfo.close();
+        propertyInfo.setContent(propertyInfoContent);
+        propertyInfo.open(basicMap, propertyMarker);
       });
     }
+  })
+  .catch(() => {
+    alert("couldn't find");
   });
 
 }
