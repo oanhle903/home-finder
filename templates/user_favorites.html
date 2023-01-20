@@ -24,7 +24,7 @@
 
     <div class='cards grid grid-cols-3 gap-3 justify-items-center'>
         {% for favorite in user.favorites %}
-            <div class="card">
+            <div class="property-card relative">
                 <div class="absolute top-2.5 right-2.5 text-3xl">
                     <form id="unfavorite-form"  action="/properties/{{ favorite.property.zpid }}/unfavorite"  method="POST">
                       <button type="submit" id="unfavorite-button ">
@@ -38,7 +38,7 @@
                 </a>
                 </div>
                 <div class='card_info my-2 mx-2'>
-                <p class="text-xl font-semibold">${{ "{:,}".format(favorite.property.price) }}</p>
+                <p class="text-3xl font-semibold">${{ "{:,}".format(favorite.property.price) }}</p>
                 <p>
                     <strong>{{ favorite.property.bedrooms }}</strong> bds |
                     <strong>{{ favorite.property.bathrooms }}</strong> ba |

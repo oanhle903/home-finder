@@ -3,11 +3,11 @@
 
 {% block body %}
 <div class="">
-  <div style="background-image: url(/static/images/house.jpg);" 
-       class="w-screen h-4/5 bg-no-repeat bg-cover">
+  <div style="background-image: url(/static/images/house2.jpg);" 
+       class="backgound w-screen h-4/5 bg-no-repeat bg-cover">
     <div class="relative landing-container">
       <div class="positive h-full flex items-center justify-center">
-        <a href="/properties" class="text-5xl text-white font-semibold">Find your dream homes</a>
+        <a href="/properties" class="text-5xl text-white font-semibold" id="text-homepage">Find your dream homes</a>
       </div>
     </div>
   </div>
@@ -15,13 +15,13 @@
   <div >
     <div class="w-5/6 m-auto my-3">
       <p class="text-3xl text-center mb-3" >Feature Properties</p>
-      <div class="grid grid-cols-4 gap-2">
+      <div class="grid grid-cols-4 gap-3">
         {% for property in random_properties %}
           {% include '_property_card.html' %}
         {% endfor %}
       </div>
       <div class="text-center h-24 my-3 flex items-center justify-center">
-        <a href="/properties" class="text-white rounded text-xl py-2 px-6" style="background-color: #7fa100;">View More</a>
+        <a href="/properties" class="btn text-white rounded text-xl py-2 px-6" style="background-color: #7fa100;">View More</a>
       </div>
     </div>
   </div>

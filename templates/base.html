@@ -48,39 +48,39 @@
     
     <nav class="navbar navbar-expand-lg bg-light">
       <div class="container-fluid">
-        <a class="navbar-brand ms-3 text-4xl" style="color: #636b46;" href="/">Paradise</a>
+        <a class="navbar-brand ms-3 text-4xl" style="color: #373f27;" href="/">Paradise</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav ms-auto">
+          <ul class="navbar-nav ms-auto text-xl font-bold">
             <li class="nav-item mx-3">
-              <a class="nav-link text-black text-lg" href="/properties">Discover</a>
+              <a class="nav-link text-black hover:bg-gray-200 rounded-full" href="/properties">Discover</a>
             </li>
             {% if session.get("user_id") %}
             <li class="nav-item mx-3">
-              <a class="nav-link text-black text-lg" href="/users/{{ session['user_id'] }}/favorites">Watchlist</a>
+              <a class="nav-link text-black hover:bg-gray-200 rounded-full" href="/users/{{ session['user_id'] }}/favorites">Watchlist</a>
             </li>
             {% endif %}
             {% if session.get("user_id") %}
             <li class="nav-item mx-3">
-              <a class="nav-link text-black text-lg" href="/users/{{ session['user_id'] }}/schedules">Schedule</a>
+              <a class="nav-link text-black hover:bg-gray-200 rounded-full" href="/users/{{ session['user_id'] }}/schedules">Schedule</a>
             </li>
             {% endif %}
             {% if not session.get("user_id") %}
             <li class="nav-item mx-3 flex items-center">
-              <a class="nav-link text-lg text-white rounded-full py-1 px-6" style="background-color: #7fa100;" role="button" data-bs-toggle="modal" data-bs-target="#signUpModal">Sign up</a>
+              <a class="nav-link text-white rounded-full py-1 px-6" style="background-color: #7fa100;" role="button" data-bs-toggle="modal" data-bs-target="#signUpModal">Sign up</a>
             </li>
             {% endif %}
             {% if not session.get("user_id") %}
             <li class="nav-item mx-3">
-              <a class="nav-link text-black text-lg" role="button" data-bs-toggle="modal" data-bs-target="#signInModal">Sign in</a>
+              <a class="nav-link text-black hover:bg-gray-200 rounded-full" role="button" data-bs-toggle="modal" data-bs-target="#signInModal">Sign in</a>
             </li>
             {% endif %}
           
             {% if session.get("user_id") %}
             <li class="nav-item mx-3" >
-              <a class="nav-link text-black text-lg" href="/logout">Sign out</a>
+              <a class="nav-link text-black hover:bg-gray-200 rounded-full" href="/logout">Sign out</a>
             </li>
             {% endif %}
           </ul>

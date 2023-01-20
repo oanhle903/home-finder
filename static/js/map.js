@@ -4,8 +4,8 @@
 // to rely on value-hoisting in this circumstance.
 function initMap() {
   const sfBayCoords = {
-    lat: 37.601773,
-    lng: -122.20287,
+    lat: 37.55,
+    lng: -122.1,
   };
 
   const basicMap = new google.maps.Map(document.querySelector('#map'), {
@@ -35,7 +35,7 @@ function initMap() {
 
           <div class="property-info pl-4">
             <p class="text-2xl font-semibold my-1">$${property.price.toLocaleString()}</p>
-            <p class="my-1"><strong>${property.bedrooms}</strong> bds |
+            <p><strong>${property.bedrooms}</strong> bds |
               <strong>${property.bathrooms}</strong> ba |
               <strong>${property.lot_area_value}</strong> ${property.lot_area_unit}
             </p>

@@ -13,7 +13,7 @@
             <div id="property-details" style="background-color: #f5f5f5;" class="flex items-center">
                 <div class="mx-auto" >
                     <div class="my-2">
-                        <span class="text-4xl font-semibold">${{ property.price }}</span>
+                        <span class="text-4xl font-semibold">${{ "{:,}".format(property.price) }}</span>
                         <span>
                             <strong>{{ property.bedrooms }}</strong> bds |
                             <strong>{{ property.bathrooms }}</strong> ba |

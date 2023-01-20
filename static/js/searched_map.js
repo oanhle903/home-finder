@@ -3,20 +3,19 @@
 // We use a function declaration for initMap because we actually *do* need
 // to rely on value-hoisting in this circumstance.
 function initMap() {
-  const sfBayCoords = {
-    lat: 37.601773,
-    lng: -122.20287,
+  const searchedData = document.querySelectorAll('.property-data');
+
+  const firstProperty = searchedData[0].dataset;
+  const firstPropertyCoords = {
+      lat: +firstProperty.latitude,
+      lng: +firstProperty.longitude
   };
-
   const basicMap = new google.maps.Map(document.querySelector('#map'), {
-    center: sfBayCoords,
-    zoom: 10,
+    center: firstPropertyCoords,
+    zoom: 13,
   });
-
  
   const propertyInfo = new google.maps.InfoWindow();
-  
-  const searchedData = document.querySelectorAll('.property-data');
 
   for (const div of searchedData) {
     const property = div.dataset;
@@ -39,7 +38,7 @@ function initMap() {
 
         <div class="property-info pl-4">
           <p class="text-2xl font-semibold my-1">$${price.toLocaleString()}</p>
-          <p class="my-1"><strong>${property.bedrooms}</strong> bds |
+          <p><strong>${property.bedrooms}</strong> bds |
           <strong>${property.bathrooms}</strong> ba |
           <strong>${property.lot_area_value}</strong> ${property.lot_area_unit}
           </p>
