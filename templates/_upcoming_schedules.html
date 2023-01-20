@@ -1,4 +1,4 @@
-<div class="card mb-3" style="max-width: 540px;">
+<div class="card mb-3" style="max-width: 540px;" >
   <div class="row g-0">
     <div class="col-md-4">
         <a href="/properties/{{ schedule.property.zpid }}">
@@ -6,12 +6,18 @@
         </a>
     </div>
     <div class="col-md-8">
-        <div class="card-body">
-          <h5 class="card-title">{{ schedule.property.address }}</h5>
-          <p class="card-text">{{ schedule.when }}</p>
-          <div class="mt-2 ">
+        <div class="card-body text-center">
+          <div>
+
+              <p class="card-text text-lg">{{ schedule.when.strftime("%b %d, %Y at %I:%M %p") }}</p>
+          </div>
+          <div>
+
+              <p class="card-title">{{ schedule.property.address }}</p>
+          </div>
+          <div class="mt-2 flex justify-center gap-2">
             <form action="/cancel"  method="POST">
-              <button type="submit" class="btn float-start me-2 text-white" name="schedule_id" value={{ schedule.schedule_id }} style="background-color: #7fa100;">Cancel</button>
+              <button type="submit" class="btn text-white px-4" name="schedule_id" value={{ schedule.schedule_id }} style="background-color: #7fa100;">Cancel</button>
             </form>
 
             <!-- Button trigger modal -->

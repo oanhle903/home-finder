@@ -3,8 +3,7 @@
 from flask import (Flask, render_template, request, flash, session,
                    redirect, jsonify)
 from datetime import datetime
-import json
-from model import connect_to_db, db, Schedule, Property, User
+from model import connect_to_db, db, Schedule
 import crud
 import os
 import random
@@ -14,11 +13,10 @@ from jinja2 import StrictUndefined
 app = Flask(__name__)
 app.secret_key = "dev"
 app.jinja_env.undefined = StrictUndefined
-
-
 app.app_context().push()
-
 MAP_API_KEY = os.environ.get('MAP_API')
+
+
 
 @app.route('/')
 def homepage():
@@ -137,12 +135,12 @@ def register_user():
 
     user = crud.get_user_by_email(email)
     if user:
-        flash("Cannot create an account with that email. Try again.")
+        flash("Cannot create an account with that email. Try again.", 'error')
     else:
         user = crud.create_user(email, password)
         db.session.add(user)
         db.session.commit()
-        flash("Account created! Please log in.")
+        flash("Account created! Please log in.", 'success')
 
     return redirect("/")
 
@@ -156,12 +154,12 @@ def process_login():
 
     user = crud.get_user_by_email(email)
     if not user or user.password != password:
-        flash("The email or password you entered was incorrect.")
+        flash("The email or password you entered was incorrect.", 'error')
     else:
         # Log in user by storing the user's email and id in session
         session["user_email"] = user.email
         session["user_id"] = user.user_id
-        flash(f"Welcome back, {user.email}!")
+        flash(f"Welcome back, {user.email}!", 'success')
 
     return redirect("/")
 
@@ -175,19 +173,6 @@ def process_logout():
     del session["user_email"]
 
     return redirect("/")
-
-    
-
-@app.route('/check_login')
-def check_login(): 
-    """Check if user is logged in"""
-
-    logged_in_email = session.get("user_email")
-    
-    if logged_in_email:
-        return 'logged_in'
-    else:
-        return 'logged_out'
 
 
 
@@ -206,10 +191,13 @@ def show_user_favorites(user_id):
 def create_favorite(zpid):
     """Create a new favorite for the property."""
 
+    session['timeout'] = 5000
+
+
     logged_in_email = session.get("user_email")
 
     if logged_in_email is None:
-        flash("You must log in to favorite this item.")
+        flash("You must log in to favorite this item.", 'error')
     else:
         user = crud.get_user_by_email(logged_in_email)
         property = crud.get_property_by_zpid(zpid)
@@ -218,7 +206,7 @@ def create_favorite(zpid):
         db.session.add(favorite)
         db.session.commit()
 
-        flash(f"You added this property to favorites.")
+        flash(f"You added this property to favorites.", 'success')
 
     return redirect(f"/properties/{zpid}")
 
@@ -258,6 +246,8 @@ def remove_favorite(zpid):
     db.session.delete(favorite)
     db.session.commit()
 
+    flash(f"You removed this property from favorites.", 'success')
+
     return redirect(f"/users/{user.user_id}/favorites")
     
 
@@ -270,24 +260,22 @@ def user_schedules(user_id):
     schedules = user.schedules
     canceled_schedules = [s for s in schedules if s.is_canceled]
 
-    current_schedules = []
     past_schedules = []
-    future_schedules = []
+    upcoming_schedules = []
 
     for schedule in schedules:
         tour_date = schedule.when  
         now = datetime.now()
-        days = tour_date - now  # = datetime.timedelta(days=2, seconds=57433, microseconds=667989)
         
-        # days.days == 0 means same day
-        if days.days == 0 and tour_date >= now:
-            current_schedules.append(schedule)
-        elif tour_date < now:
+        if tour_date < now:
             past_schedules.append(schedule)
         else:
-            future_schedules.append(schedule)
+            upcoming_schedules.append(schedule)
+    past_schedules = sorted(past_schedules, key=lambda s: s.when, reverse=True)
+    upcoming_schedules = sorted(upcoming_schedules, key=lambda s: s.when)
+    canceled_schedules = sorted(canceled_schedules, key=lambda s: s.when, reverse=True)
 
-    return render_template('user_schedules.html', user=user, current_schedules=current_schedules, past_schedules=past_schedules, future_schedules=future_schedules, canceled_schedules=canceled_schedules)
+    return render_template('user_schedules.html', user=user, past_schedules=past_schedules, upcoming_schedules=upcoming_schedules, canceled_schedules=canceled_schedules)
 
 
 @app.route('/properties/<zpid>/schedule/create', methods=["POST"])
@@ -302,7 +290,8 @@ def create_schedule(zpid):
     schedule = crud.create_schedule(user, property, when)
     db.session.add(schedule)
     db.session.commit()
-    flash(f"You booked this time to tour the property")
+
+    flash(f"You booked this time to tour the property.", 'success')
 
     return redirect(f"/properties/{zpid}")
  
@@ -313,18 +302,14 @@ def update_schedule(zpid):
     """Updates an existing schedule with a new datetime."""
 
     zpid = request.form.get('rescheduled_zpid')
-    print("zpiddddd: ", zpid)
     logged_in_email = session.get("user_email")
     new_request_datetime = request.form.get("datetime")
     new_when = datetime.strptime(new_request_datetime, '%Y-%m-%d %H:%M')
-    print("when: ", new_when)
     user = crud.get_user_by_email(logged_in_email)
-    
 
     now = datetime.now()
 
     exist_schedule = db.session.query(Schedule).filter(and_(Schedule.user_id == user.user_id, Schedule.zpid == zpid, Schedule.is_active == True, Schedule.when > now)).first()
-    print("exist_schedule: ", exist_schedule)
 
     """Updates an existing schedule with a new datetime."""
     tour_date = exist_schedule.when 
@@ -335,30 +320,12 @@ def update_schedule(zpid):
     if days.days*86400 + days.seconds > 86400: 
         exist_schedule.when = new_when
         db.session.commit()
-        flash(f"Your schedule has been updated successfully.")
+        flash(f"Your schedule has been updated successfully.", 'success')
     else:
-        flash(f"You cannot reschedule it before 24 hours")
+        flash(f"You cannot reschedule it before 24 hours.", 'error')
 
     return redirect(f"/users/{user.user_id}/schedules")
     
-
-# @app.route('/properties/<zpid>/schedule/update', methods=["POST"])
-# def update_schedule(zpid):
-#     zpid = request.form.get("zpid")
-#     logged_in_email = session.get("user_email")
-#     new_request_datetime = request.form.get("datetime")
-#     new_when = datetime.strptime(new_request_datetime, '%Y-%m-%d %H:%M')
-#     user = crud.get_user_by_email(logged_in_email)
-#     now = datetime.now()
-#     exist_schedule = db.session.query(Schedule).filter(and_(Schedule.user_id == user.user_id, Schedule.is_active == True, Schedule.when > now, Schedule.zpid == zpid)).first()
-#     tour_date = exist_schedule.when 
-#     days = tour_date - now
-#     if days.days*86400 + days.seconds > 86400: 
-#         exist_schedule.when = new_when
-#         db.session.commit()
-#         flash(f"Your schedule has been updated successfully.")
-#     else:
-#         flash(f"You cannot reschedule it before 24 hours")
 
 
 @app.route('/cancel', methods=["POST"])
@@ -378,9 +345,9 @@ def cancel_schedule():
         schedule.is_canceled = True
         schedule.is_active = False
         db.session.commit()
-        flash(f"cancelled successfully")
+        flash(f"Cancelled successfully!", 'success')
     else:
-        flash(f"You cannot cancel it before 24 hours")
+        flash(f"You cannot cancel it before 24 hours.", 'error')
 
     return redirect(f"/users/{user.user_id}/schedules")
 

@@ -1,15 +1,15 @@
-<div class="card mb-3" style="max-width: 540px;">
+<div class="card mb-3 " style="max-width: 540px;">
   <div class="row g-0">
-  <div class="col-md-4">
-    <a href="/properties/{{ schedule.property.zpid }}">
-      <img src="{{ schedule.property.img_src }}" class="img-fluid rounded-start" alt="property image">
-    </a>
-  </div>
-  <div class="col-md-8">
-      <div class="card-body">
-      <h5 class="card-title">{{ schedule.property.address }}</h5>
-      <p class="card-text">{{ schedule.when }}</p>
-      </div>
-  </div>
+    <div class="col-md-4">
+      <a href="/properties/{{ schedule.property.zpid }}">
+        <img src="{{ schedule.property.img_src }}" class="img-fluid rounded-start" alt="property image">
+      </a>
+    </div>
+    <div class="col-md-8 text-center">
+        <div class="card-body">
+          <p class="card-text text-lg">{{ schedule.when.strftime("%b %d, %Y at %I:%M %p") }}</p>
+          <p class="card-title">{{ schedule.property.address }}</p>
+        </div>
+    </div>
   </div>
 </div>

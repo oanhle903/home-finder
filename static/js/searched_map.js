@@ -13,25 +13,15 @@ function initMap() {
     zoom: 10,
   });
 
-  const sfMarker = new google.maps.Marker({
-    position: sfBayCoords,
-    title: 'SF Bay',
-    map: basicMap,
-  });
-
-  const sfInfo = new google.maps.InfoWindow({
-    content: '<h1>San Francisco Bay!</h1>',
-  });
-
-  sfInfo.open(basicMap, sfMarker);
  
-
   const propertyInfo = new google.maps.InfoWindow();
   
   const searchedData = document.querySelectorAll('.property-data');
 
   for (const div of searchedData) {
     const property = div.dataset;
+      // Convert property.price from string to number
+  const price = +property.price;
 
     const propertyInfoContent = `
       <div class="window-content relative flex w-72 h-24 rounded">
@@ -48,7 +38,7 @@ function initMap() {
         </div>
 
         <div class="property-info pl-4">
-          <p class="text-2xl font-semibold my-1">$${property.price}</p>
+          <p class="text-2xl font-semibold my-1">$${price.toLocaleString()}</p>
           <p class="my-1"><strong>${property.bedrooms}</strong> bds |
           <strong>${property.bathrooms}</strong> ba |
           <strong>${property.lot_area_value}</strong> ${property.lot_area_unit}
