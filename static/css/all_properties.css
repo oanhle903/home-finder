@@ -17,3 +17,33 @@ body {
 .content {
   margin-bottom: 25% !important;
 }
+
+.map-footer { 
+  right: 0;
+  padding: 15px;
+  background-color: #f5f5f5;
+}
+
+.navbar-brand {
+  font-family: 'Open Sans', sans-serif;
+  font-family: 'Rowdies', cursive;
+  font-family: 'Unbounded', cursive;
+}
+.property-card {
+  border: 1px solid #D3D3D3;
+}
+
+.property-card:hover{
+  transform: scale(1.015);
+  background: #f5f5f5;
+  z-index: 100;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+}
+
+#text-homepage:hover {
+  color: #fefae0 !important; /* Change text color on hover */
+  font-family: 'Unbounded', cursive;
+}

@@ -36,8 +36,21 @@ def all_properties():
     for property in properties:
         zipcodes.add(property.zipcode)
 
-    return render_template('all_properties.html', search=False, MAP_API_KEY=MAP_API_KEY, properties=properties, zipcodes=zipcodes)
+    return render_template('all_properties.html', search=False, MAP_API_KEY=MAP_API_KEY, properties=properties, zipcodes=zipcodes, map=True)
 
+
+
+@app.route('/properties.json')
+def propertiess():
+    """Return list of properties dictionary"""
+
+    properties = crud.get_properties()
+
+    # Convert the list of objects to a list of dictionaries
+    dict_list = [obj.to_dict() for obj in properties]
+
+    #return jason data of properties 
+    return jsonify(dict_list)
 
 
 @app.route('/properties/<zpid>')
@@ -90,20 +103,6 @@ def find_searched_properties():
         else:
             return render_template('all_properties.html', search=True, MAP_API_KEY=MAP_API_KEY, properties=properties_by_zipcode, zipcodes=zipcodes)
 
-
-
-
-
-@app.route('/properties.json')
-def propertiess():
-    """Return list of properties dictionary"""
-
-    properties = crud.get_properties()
-
-    # Convert the list of objects to a list of dictionaries
-    dict_list = [obj.to_dict() for obj in properties]
-
-    return jsonify(dict_list)
 
 
 
@@ -191,9 +190,6 @@ def show_user_favorites(user_id):
 def create_favorite(zpid):
     """Create a new favorite for the property."""
 
-    session['timeout'] = 5000
-
-
     logged_in_email = session.get("user_email")
 
     if logged_in_email is None:
@@ -208,7 +204,7 @@ def create_favorite(zpid):
 
         flash(f"You added this property to favorites.", 'success')
 
-    return redirect(f"/properties/{zpid}")
+    return redirect(request.referrer)
 
 
 
@@ -248,7 +244,7 @@ def remove_favorite(zpid):
 
     flash(f"You removed this property from favorites.", 'success')
 
-    return redirect(f"/users/{user.user_id}/favorites")
+    return redirect(request.referrer)
     
 
 
@@ -293,7 +289,7 @@ def create_schedule(zpid):
 
     flash(f"You booked this time to tour the property.", 'success')
 
-    return redirect(f"/properties/{zpid}")
+    return redirect(request.referrer)
  
 
 
@@ -324,7 +320,7 @@ def update_schedule(zpid):
     else:
         flash(f"You cannot reschedule it before 24 hours.", 'error')
 
-    return redirect(f"/users/{user.user_id}/schedules")
+    return redirect(request.referrer)
     
 
 
@@ -349,7 +345,7 @@ def cancel_schedule():
     else:
         flash(f"You cannot cancel it before 24 hours.", 'error')
 
-    return redirect(f"/users/{user.user_id}/schedules")
+    return redirect(request.referrer)
 
 
 

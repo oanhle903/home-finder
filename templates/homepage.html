@@ -2,7 +2,7 @@
 {% block title %} Finding Properties Home{% endblock %}
 
 {% block body %}
-<div class="">
+<div class="content">
   <div style="background-image: url(/static/images/house2.jpg);" 
        class="backgound w-screen h-4/5 bg-no-repeat bg-cover">
     <div class="relative landing-container">
@@ -12,9 +12,9 @@
     </div>
   </div>
 
-  <div >
+  <div>
     <div class="w-5/6 m-auto my-3">
-      <p class="text-3xl text-center mb-3" >Feature Properties</p>
+      <p class="text-3xl text-center mb-3" >Featured Properties</p>
       <div class="grid grid-cols-4 gap-3">
         {% for property in random_properties %}
           {% include '_property_card.html' %}

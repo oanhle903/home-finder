@@ -116,6 +116,7 @@ def create_favorite(user, property):
 
     return favorite 
 
+
 def is_favorite(zpid):
     """Check if this property is already favorited"""
     favorite = Favorite.query.filter_by(zpid=zpid).first()
@@ -147,6 +148,10 @@ def create_schedule(user, property, when):
         is_canceled=False)
     
     return schedule
+
+
+
+
 
 
 if __name__ == '__main__':
