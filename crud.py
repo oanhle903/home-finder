@@ -144,13 +144,9 @@ def get_schedule_by_schedule_id(schedule_id):
 def create_schedule(user, property, when):
     """Create and return a schedule"""
 
-    schedule = Schedule(user=user, property=property, when=when, is_active=True,
-        is_canceled=False)
+    schedule = Schedule(user=user, property=property, when=when, is_active=True, is_canceled=False)
     
     return schedule
-
-
-
 
 
 

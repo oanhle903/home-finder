@@ -28,6 +28,7 @@ def homepage():
     return render_template('homepage.html', random_properties=random_properties)
 
 
+
 @app.route('/properties')
 def all_properties():
     """View all properties"""
@@ -53,16 +54,13 @@ def propertiess():
     return jsonify(dict_list)
 
 
+
 @app.route('/properties/<zpid>')
 def property_details(zpid):
     """View details of a property"""
 
     property = crud.get_property_by_zpid(zpid)
     
-    """
-    check if property is already in the favorites table
-    query the favortie table given that zpid and return is_favorite yes or no?
-    """
     is_favorite = crud.is_favorite(zpid)
     now = datetime.now()
     
@@ -105,7 +103,6 @@ def find_searched_properties():
 
 
 
-
 @app.route('/users')
 def all_users():
     """View all users"""
@@ -113,6 +110,7 @@ def all_users():
     users = crud.get_users()
 
     return render_template('all_users.html', users=users)
+
 
 
 @app.route('/users/<user_id>')
@@ -142,6 +140,7 @@ def register_user():
         flash("Account created! Please log in.", 'success')
 
     return redirect("/")
+
 
 
 @app.route('/login', methods=["POST"])
@@ -272,6 +271,7 @@ def user_schedules(user_id):
     canceled_schedules = sorted(canceled_schedules, key=lambda s: s.when, reverse=True)
 
     return render_template('user_schedules.html', user=user, past_schedules=past_schedules, upcoming_schedules=upcoming_schedules, canceled_schedules=canceled_schedules)
+
 
 
 @app.route('/properties/<zpid>/schedule/create', methods=["POST"])

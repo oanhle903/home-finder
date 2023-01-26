@@ -2,7 +2,6 @@
 
 import os
 import json
-from random import choice, randint
 from datetime import datetime
 
 import crud
@@ -10,7 +9,6 @@ import model
 import server
 
 os.system("dropdb properties")
-# More code will go here
 
 # re-creating the database
 os.system('dropdb properties')
@@ -70,7 +68,7 @@ model.db.session.commit()
 
 # Create 10 users;
 for n in range(10):
-    email = f'user{n+1}@test.com'  # Voila! A unique email!
+    email = f'user{n+1}@test.com' 
     password = 'test'
 
     # Create a user here
