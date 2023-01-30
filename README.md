@@ -42,7 +42,7 @@ While there are many great applications out there to search for properties and b
 ## Features
 
 Homepage
-![Homepage](/static/images/readme_imgs/hompage1.mp4)
+![Homepage](/static/images/readme_imgs/homepage.png)
 <br/><br/><br/>
 
 ## Roadmap
