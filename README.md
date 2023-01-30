@@ -6,7 +6,17 @@ An app to allow users to search for properties and track their favorite properti
 
 While there are many great applications out there to search for properties and book tours, there are not any great applications for tracking a combination of all booking schedules, so I was inspired to make one for myself.
 
-## MVP
+## Table of contents
+
+
+* [MVP](#mvp)
+* [Tech Stack](#tech-stack)
+* [Features](#features)
+* [Roadmap](#roadmap)
+* [Installation](#installation)
+
+
+## <a name="mvp"></a>MVP
 
 - As a user, I want to be able to search for properties.
 - As a user, I want to be able to view the details of each property.
@@ -16,7 +26,8 @@ While there are many great applications out there to search for properties and b
 - As a user, I want to be able to access, cancel, and update my schedules by clicking on a schedules category.
 - As a user, I want to be able to create an account and login to my account.
 
-## Tech stack
+
+## <a name="tech-stack"></a>Tech Stack
 
 - **Database:** PostgreSQL
 - **Backend:** Python (Flask), SQLAlchemy
@@ -39,13 +50,42 @@ While there are many great applications out there to search for properties and b
   - Bootstrap
 
 
-## Features
+## <a name="features"></a>Features
 
 Homepage
+
 ![Homepage](https://user-images.githubusercontent.com/68570059/215597009-e52fc51c-f170-43c5-abe8-33364e532e80.mp4)
 <br/><br/><br/>
 
-## Roadmap
+All properties page. Users can search properties by zipcode and filters.
+
+![All propertie spage](https://user-images.githubusercontent.com/68570059/215601413-94d0284e-8417-4262-aa5a-ccca802ba023.mp4)
+<br/><br/><br/>
+
+Login - Signup. User can favorite and create schedules after logging in successfully.
+
+![Login](https://user-images.githubusercontent.com/68570059/215603377-e9405aa0-aef9-4422-a5d8-95dfedb4be0d.mp4)
+<br/><br/><br/>
+
+Favorite a property. On favorite page, users can unfavortie those properties and utilize the sorting method to save time.
+
+![Favorite page](https://user-images.githubusercontent.com/68570059/215606505-9420d3cb-79d2-4804-b879-6cf1ef9fca6f.mp4)
+<br/><br/><br/>
+
+
+Create a schedule. 
+
+![Create schedule](https://user-images.githubusercontent.com/68570059/215610446-4ce5dbc4-56fe-4eb1-a365-82fea914b1ee.mp4)
+<br/><br/><br/>
+
+
+On schedule page, users can cancel and update schedules.
+
+![Schedule Page](https://user-images.githubusercontent.com/68570059/215610457-7f838c48-cc87-43e2-a95b-609794b734e8.mp4)
+<br/><br/><br/>
+
+
+## <a name="roadmap"></a>Roadmap
 
 ### Sprint 1
 
@@ -63,7 +103,8 @@ Homepage
 - Favorite page to display all favorite properties a user has created, with links to each property detail page
 - Scheudle page to display all schedules a user has created, with links to each property detail page
 
-## Instalation 
+
+## <a name= "installation"></a>Installation
 
 ### Requirements
 
