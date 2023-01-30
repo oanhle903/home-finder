@@ -38,6 +38,13 @@ While there are many great applications out there to search for properties and b
 - Browser/client-side dependencies:
   - Bootstrap
 
+
+## Features
+
+Homepage
+![Homepage](/static/images/readme_imgs/hompage_readme.mp4)
+<br/><br/><br/>
+
 ## Roadmap
 
 ### Sprint 1
