@@ -42,8 +42,7 @@ While there are many great applications out there to search for properties and b
 ## Features
 
 Homepage
-![Homepage](/static/images/readme_imgs/homepage.png)
-![Homepage](/static/images/readme_imgs/hompage1.mp4)
+![Homepage](https://user-images.githubusercontent.com/68570059/215597009-e52fc51c-f170-43c5-abe8-33364e532e80.mp4)
 <br/><br/><br/>
 
 ## Roadmap
